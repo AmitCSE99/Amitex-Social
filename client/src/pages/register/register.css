@@ -1,0 +1,148 @@
+.register {
+  width: 100vw;
+  height: 100vh;
+  /* background-image: linear-gradient(to right, blue, tomato); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.registerWrapper {
+  width: 70%;
+  height: 80%;
+  display: flex;
+}
+.registerLeft,
+.registerRight {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.registerLogo {
+  font-size: 50px;
+  font-weight: 900;
+  color: #662d8c;
+  margin-bottom: 10px;
+  background-image: linear-gradient(to right, #662d8c, #ed1e79);
+  background-size: 100%;
+  background-clip: text;
+  -moz-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-text-fill-color: transparent;
+}
+.registerDesc {
+  font-size: 24px;
+}
+.registerBox {
+  height: 450px;
+  padding: 20px;
+  background-color: rgb(233, 233, 233);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.registerInput {
+  height: 50px;
+  border-radius: 10px;
+  border: 1px solid grey;
+  font-size: 18px;
+  padding-left: 20px;
+}
+.registerInput:focus {
+  outline: none;
+}
+.registerButton {
+  height: 50px;
+  border-radius: 10px;
+  border: none;
+  transition: 0.5s;
+  background-size: 200% auto;
+  background-image: linear-gradient(to right, #662d8c, #ed1e79);
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.registerButton:hover {
+  background-position: right center;
+  box-shadow: 0px 5px 20px -5px #662d8c;
+  transform: translateY(-2px);
+}
+.registerForgot {
+  text-align: center;
+  color: rgb(0, 44, 165);
+}
+.registerLoginButton {
+  height: 50px;
+  border-radius: 10px;
+  border: none;
+  transition: 0.5s;
+  background-size: 200% auto;
+  background-image: linear-gradient(to right, #662d8c, #ed1e79);
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.registerLoginButton:hover {
+  background-position: right center;
+  box-shadow: 0px 5px 20px -5px #662d8c;
+  transform: translateY(-2px);
+}
+.registerErrorMessage {
+  color: #f02424;
+  margin-bottom: 10px;
+}
+@media (max-width: 1200px) {
+  .registerWrapper {
+    flex-direction: column;
+  }
+  .registerDesc {
+    margin-bottom: 10px;
+  }
+}
+@media (max-width: 570px) {
+  .registerLogo {
+    font-size: 40px;
+  }
+  .registerDesc {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+}
+@media (max-width: 457px) {
+  .registerLogo {
+    font-size: 35px;
+  }
+  .registerDesc {
+    font-size: 16px;
+  }
+  .registerWrapper {
+    width: 90%;
+  }
+}
+@media (max-width: 320px) {
+  .registerDesc {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    align-self: center;
+  }
+  .registerBox {
+    align-self: center;
+    margin-bottom: 20px;
+    /* overflow-y: scroll; */
+  }
+  .registerLogo {
+    margin-left: 10px;
+    margin-right: 10px;
+    /* align-self: center; */
+  }
+  .registerWrapper {
+    width: 100%;
+  }
+  .registerBox {
+    width: 90%;
+  }
+}

@@ -1,0 +1,36 @@
+.commentContainer {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.commentContainerLoading {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+.commenterImage {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  align-self: center;
+}
+.commenterDetails {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 20px;
+  padding: 10px;
+  background-color: rgb(236, 236, 236);
+}
+.commenterDetailsHeading {
+  font-size: 13px;
+  font-weight: 500;
+}
+.commenterDetailsComment {
+  font-size: 15px;
+}

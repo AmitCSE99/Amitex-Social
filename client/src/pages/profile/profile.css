@@ -1,0 +1,87 @@
+.profile {
+  display: flex;
+}
+.profileRight {
+  flex: 7;
+  height: calc(100vh - 50px);
+  overflow-y: scroll;
+}
+.profileCover {
+  height: 320px;
+  position: relative;
+}
+.profileCoverImage {
+  width: 100%;
+  height: 250px;
+  /* object-fit: cover; */
+}
+.profileUserImage {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  top: 150px;
+  border: 3px solid white;
+}
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.profileInfoName {
+  font-size: 24px;
+  padding: 1px;
+}
+.profileInfoDesc {
+  font-weight: 300;
+  padding: 1px;
+}
+.profileRightBottom {
+  display: flex;
+}
+.followButton {
+  margin-top: 30px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  border: none;
+  transition: 0.5s;
+  border-radius: 5px;
+  background-size: 200% auto;
+  padding: 10px 10px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 0 20px #eee;
+
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+
+  background-image: linear-gradient(to right, #662d8c, #ed1e79);
+}
+.followButton:hover {
+  background-position: right center;
+}
+/* .followButtonStyle {
+  background-image: linear-gradient(to right, #4b086d 0%, #acc0fe 100%);
+} */
+.profileEditor {
+  display: flex;
+  width: 50%;
+  align-items: center;
+  justify-content: space-between;
+}
+.profileRightLoading {
+  height: 500px;
+  /* width: 100%; */
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 40px calc((100% - (255px * 3)) / 2);
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: center;
+}
