@@ -1,12 +1,38 @@
 const router = require("express").Router();
 const Post = require("../models/post");
 const User = require("../models/user");
+const cloudinary = require("../cloudinary");
 const {
   authenticateToken,
   checkFrontendToken,
 } = require("../middlewares/authentication");
 router.post("/", async (req, res) => {
-  const newPost = new Post(req.body);
+  // const newPost = new Post(req.body);
+
+  let public_url = "";
+  let secure_url = "";
+
+  if (req.body.img) {
+    const image_uploaded = req.body.img;
+    try {
+      const response = await cloudinary.uploader.upload(image_uploaded);
+      console.log(response);
+      secure_url = response.secure_url;
+      public_url = response.public_id;
+    } catch (err) {
+      return res
+        .status(500)
+        .json({ success: false, message: "Image cannot be uploaded" });
+    }
+  }
+
+  const newPost = new Post({
+    user: req.body.user,
+    desc: req.body.desc,
+    img: secure_url,
+    public_url: public_url,
+  });
+
   try {
     const post = await newPost.save();
     res.status(200).json({ message: post });

@@ -71,7 +71,7 @@ export default function Profile() {
       }
     };
     fetchUser();
-  }, [username, followed]);
+  }, [username, user._id, followed]);
 
   // useEffect(() => {
   //   setFollowed(currentUser.following.includes(user?.id));

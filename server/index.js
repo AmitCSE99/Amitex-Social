@@ -31,30 +31,39 @@ const MIME_TYPE_MAP = {
 
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
-app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
+app.use(
+  express.json({
+    limit: "200mb",
+  })
+);
 app.use(helmet());
 app.use(morgan("common"));
-var name;
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "public/images");
-  },
-  filename: (req, file, cb) => {
-    const ext = MIME_TYPE_MAP[file.mimetype];
-    name = uuidv1() + "." + ext;
-    cb(null, name);
-  },
-});
+// var name;
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, "public/images");
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = MIME_TYPE_MAP[file.mimetype];
+//     name = uuidv1() + "." + ext;
+//     cb(null, name);
+//   },
+// });
 
-const uploadImage = multer({ storage });
-app.post("/api/upload", uploadImage.single("file"), (req, res) => {
-  try {
-    console.log(storage);
-    return res.status(200).json({ name });
-  } catch (err) {
-    console.log(err);
-  }
-});
+// const uploadImage = multer({ storage });
+// app.post("/api/upload", uploadImage.single("file"), (req, res) => {
+//   try {
+//     console.log(storage);
+//     return res.status(200).json({ name });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
 
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);

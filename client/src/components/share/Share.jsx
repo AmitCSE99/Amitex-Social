@@ -6,6 +6,7 @@ import {
   EmojiEmotions,
   Cancel,
 } from "@material-ui/icons";
+import { CircularProgress } from "@material-ui/core";
 import { useContext, useRef, useState } from "react";
 import AuthContext from "../../context/AuthContext";
 import axios from "axios";
@@ -14,30 +15,54 @@ export default function Share() {
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const desc = useRef();
   const [file, setFile] = useState(null);
+  const [isFetching, setIsFetching] = useState(false);
+  const [image, setImage] = useState(null);
+
+  const onChangeHandler = async (e) => {
+    const file = e.target.files[0];
+    const base64 = await convertIntoBase64(file);
+    setImage(base64);
+  };
+
+  const convertIntoBase64 = async (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    setIsFetching(true);
     const newPost = {
       user: user._id,
       desc: desc.current.value,
+      img: image,
     };
-    if (file) {
-      console.log(file);
-      const data = new FormData();
-      const fileName = Date.now() + file.name;
-      data.append("file", file);
-      data.append("name", fileName);
-      // newPost.img = fileName;
-      try {
-        const response = await axios.post("/upload", data);
-        console.log(response);
-        newPost.img = response.data.name;
-      } catch (err) {
-        console.log(err);
-      }
-    }
+    // if (file) {
+    //   console.log(file);
+    //   const data = new FormData();
+    //   const fileName = Date.now() + file.name;
+    //   data.append("file", file);
+    //   data.append("name", fileName);
+    //   // newPost.img = fileName;
+    //   try {
+    //     const response = await axios.post("/upload", data);
+    //     console.log(response);
+    //     newPost.img = response.data.name;
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // }
     try {
       await axios.post("/posts", newPost);
+      setIsFetching(false);
       window.location.reload();
     } catch (err) {
       console.log(err);
@@ -58,18 +83,18 @@ export default function Share() {
             alt=""
           />
           <input
-            placeholder={"What's in your mind "}
+            placeholder={"What's in your mind " + user.name.split(" ")[0]}
             className="shareInput"
             ref={desc}
           />
         </div>
         <hr className="shareHr" />
-        {file && (
+        {image && (
           <div className="shareImageContainer">
-            <img src={URL.createObjectURL(file)} alt="" className="shareImg" />
+            <img src={image} alt="" className="shareImg" />
             <Cancel
               className="shareCancelImage"
-              onClick={() => setFile(null)}
+              onClick={() => setImage(null)}
             />
           </div>
         )}
@@ -83,7 +108,7 @@ export default function Share() {
                 type="file"
                 id="file"
                 accept=".png,.jpeg,.jpg"
-                onChange={(e) => setFile(e.target.files[0])}
+                onChange={onChangeHandler}
               ></input>
             </label>
             <div className="shareOption">
@@ -100,7 +125,11 @@ export default function Share() {
             </div>
           </div>
           <button type="submit" className="shareButton">
-            Share
+            {isFetching ? (
+              <CircularProgress color="white" size="16px" />
+            ) : (
+              "Share"
+            )}
           </button>
         </form>
       </div>
