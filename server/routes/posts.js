@@ -41,6 +41,40 @@ router.post("/", async (req, res) => {
     res.status(500).json({ message: err });
   }
 });
+
+router.post("/editPost", async (req, res) => {
+  const postId = req.body.postId;
+  const img = req.body.img;
+  const desc = req.body.desc;
+  const public_url = req.body.public_url;
+  try {
+    await cloudinary.uploader.destroy(public_url);
+    const imageResponse = await cloudinary.uploader.upload(img);
+    const updateObject = {
+      desc,
+      img: imageResponse.secure_url,
+      public_url: imageResponse.public_id,
+    };
+    const response = await Post.findByIdAndUpdate(postId, updateObject);
+
+    res.status(200).json({ success: true, message: response });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Something went wrong!" });
+  }
+});
+
+router.delete("/deletePost", async (req, res) => {
+  const postId = req.body.postId;
+  const public_url = req.body.public_url;
+  try {
+    await cloudinary.uploader.destroy(public_url);
+    const post = await Post.findByIdAndDelete(postId);
+    res.status(200).json({ success: false, post });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+});
+
 router.put("/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);

@@ -14,7 +14,6 @@ export default function Share() {
   const { user } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const desc = useRef();
-  const [file, setFile] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [image, setImage] = useState(null);
 
