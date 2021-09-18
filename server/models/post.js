@@ -35,6 +35,10 @@ const PostSchema = new mongoose.Schema(
       ],
       default: [],
     },
+    bookMarkedBy: {
+      type: Array,
+      default: [],
+    },
     public_url: {
       type: String,
       required: true,

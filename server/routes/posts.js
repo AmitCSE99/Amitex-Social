@@ -75,6 +75,23 @@ router.delete("/deletePost", async (req, res) => {
   }
 });
 
+router.post("/bookmarkPost", async (req, res) => {
+  const postId = req.body.postId;
+  const userId = req.body.userId;
+  try {
+    const post = await Post.findById(postId);
+    if (!post.bookMarkedBy.includes(userId)) {
+      await post.updateOne({ $push: { bookMarkedBy: userId } });
+      return res.status(200).json({ success: true, message: "Bookmarked" });
+    } else {
+      await post.updateOne({ $pull: { bookMarkedBy: userId } });
+      return res.status(200).json({ success: true, message: "Unbookmarked" });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+});
+
 router.put("/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
