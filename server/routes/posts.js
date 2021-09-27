@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const Post = require("../models/post");
 const User = require("../models/user");
+const Report = require("../models/report");
 const cloudinary = require("../cloudinary");
 const {
   authenticateToken,
@@ -193,6 +194,83 @@ router.put("/:id/postComment", async (req, res) => {
     res.status(200).json({ commentObj });
   } catch (err) {
     res.status(500).json({ message: err });
+  }
+});
+
+router.post("/:id/reportPost", async (req, res) => {
+  const reportedPost = req.params.id;
+  const reportedUser = req.body.reportedUser;
+  const reportingUser = req.body.reportingUser;
+  const reportMessage = req.body.reportMessage;
+  try {
+    const post = await Report.findOne({ reportedPost: reportedPost });
+    console.log(post);
+    if (!post) {
+      const firstReportingUser = {
+        user: reportingUser,
+        reportMessage,
+      };
+      const newReport = new Report({
+        reportedPost,
+        reportedUser,
+        reportingUsers: firstReportingUser,
+      });
+      await newReport.save();
+      return res.status(200).json({
+        success: true,
+        message: "The post has been reported successfully",
+      });
+    } else {
+      const appendReportUser = {
+        user: reportingUser,
+        reportMessage,
+      };
+      // if (post.reportingUsers.includes(appendReportUser.user)) {
+      //   return res.status(200).json({
+      //     success: false,
+      //     message: "You have already reported this post!",
+      //   });
+      // }
+      const index = post.reportingUsers.findIndex((u) => {
+        return u.user.toString() === reportingUser.toString();
+      });
+      if (index !== -1) {
+        return res.status(200).json({
+          success: false,
+          message: "you have already reported this post!",
+        });
+      }
+      await post.updateOne({ $push: { reportingUsers: appendReportUser } });
+      return res.status(200).json({
+        success: true,
+        message: "The Post has been reported sucessfully",
+      });
+    }
+    // console.log(post);
+    // const newReport = new Report({
+    //   reportedPost,
+    //   reportedUser,
+    //   reportingUser,
+    //   reportMessage,
+    // });
+    // await newReport.save();
+    // res.status(200).json({
+    //   success: true,
+    //   message: "The Post Has been reported successfully",
+    // });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err });
+  }
+});
+
+router.get("/reportedPosts/fetch", async (req, res) => {
+  try {
+    const reportedPosts = await Report.find()
+      .populate("reportedUser")
+      .populate("reportingUsers.user");
+    res.status(200).json({ success: true, reportedPosts });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Something went wrong" });
   }
 });
 
