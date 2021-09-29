@@ -24,6 +24,7 @@ function App() {
   const [isFetching, setIsFetching] = useState(false);
   const [fetchAuth, setFetchAuth] = useState(false);
   const [followings, setFollowings] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [error, setError] = useState(null);
 
   const login = useCallback((email, password) => {
@@ -59,6 +60,15 @@ function App() {
     setFollowings(updateFollowings);
   }, []);
 
+  const RemoveRequest = useCallback((userId) => {
+    let updateRequests = requests;
+    updateRequests.filter((uid) => {
+      console.log(uid);
+      return uid !== userId;
+    });
+    setRequests(updateRequests);
+  }, []);
+
   const Unfollow = useCallback((userId) => {
     let updateFollowings = followings;
     updateFollowings.filter((uid) => {
@@ -82,6 +92,8 @@ function App() {
       if (response.data.success) {
         setUser(response.data.user);
         setFollowings(response.data.user.following);
+        setRequests(response.data.user.requests);
+        console.log(requests);
       } else {
         setUser(null);
       }
@@ -116,6 +128,7 @@ function App() {
             logout: logout,
             Follow: Follow,
             Unfollow: Unfollow,
+            RemoveRequest: RemoveRequest,
           }}
         >
           <Router>

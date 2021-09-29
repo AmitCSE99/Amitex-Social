@@ -131,6 +131,58 @@ router.put("/:id/acceptRequest", async (req, res) => {
     res.status(403).json({ message: "You cannot follow yourself" });
   }
 });
+
+router.put("/:id/cancelRequest", async (req, res) => {
+  if (req.body.userId != req.params.id) {
+    try {
+      const user = await User.findById(req.params.id);
+      if (user.requests.includes(req.body.userId)) {
+        await user.updateOne({ $pull: { requests: req.body.userId } });
+        res.status(200).json({
+          success: true,
+          message: "The Request has been cancelled succesfully",
+        });
+      } else {
+        res
+          .status(500)
+          .json({ success: false, message: "Cancel Request was unsuccessful" });
+      }
+    } catch (err) {
+      res.status(500).json({ success: false, message: "Something went wrong" });
+    }
+  } else {
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+});
+
+router.put("/:id/rejectRequest", async (req, res) => {
+  if (req.params.id != req.body.userId) {
+    try {
+      const currentUser = await User.findById(req.body.userId);
+      if (currentUser.requests.includes(req.params.id)) {
+        await currentUser.updateOne({ $pull: { requests: req.params.id } });
+        res
+          .status(200)
+          .json({
+            success: true,
+            message: "The user has been sucessfully rejected!",
+          });
+      } else {
+        res
+          .status(500)
+          .json({
+            success: false,
+            message: "Reject Request was unsuccessful!",
+          });
+      }
+    } catch (err) {
+      res.status(500).json({ success: false, message: "Something went wrong" });
+    }
+  } else {
+    res.status(500).json({ success: false, message: "Something went wrong!" });
+  }
+});
+
 router.put("/:id/unfollow", async (req, res) => {
   if (req.body.userId != req.params.id) {
     try {

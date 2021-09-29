@@ -33,5 +33,6 @@ const AuthContext = createContext({
   followings: [],
   Follow: () => {},
   Unfollow: () => {},
+  RemoveRequest: () => {},
 });
 export default AuthContext;

@@ -55,6 +55,9 @@
   display: flex;
   align-items: center;
 }
+.postTopRight {
+  cursor: pointer;
+}
 .likeIcon {
   width: 24px;
   height: 24px;

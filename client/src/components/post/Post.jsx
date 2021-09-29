@@ -7,8 +7,10 @@ import { format } from "timeago.js";
 import { Link } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
 import CommentsContainer from "../commentsContainer/CommentsContainer";
+import PostOptionsModal from "../../modals/PostOptionsModal";
 
 export default function Post({ post }) {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [like, setLike] = useState(post.likes.length);
   const [isLiked, setIsLiked] = useState(false);
   const [commentCounter, setCommentCounter] = useState(post.comments.length);
@@ -39,6 +41,13 @@ export default function Post({ post }) {
   //   };
   //   fetchUser();
   // }, [post.userId, commentCounter]);
+  const openModalHandler = () => {
+    setModalIsOpen(true);
+  };
+
+  const closeModalHandler = () => {
+    setModalIsOpen(false);
+  };
 
   const likeHandler = async () => {
     try {
@@ -104,7 +113,7 @@ export default function Post({ post }) {
             <span className="postUsername">{post.user.name}</span>
             <span className="postDate">{format(post.createdAt)}</span>
           </div>
-          <div className="postTopRight">
+          <div className="postTopRight" onClick={openModalHandler}>
             <MoreVert></MoreVert>
           </div>
         </div>
@@ -184,6 +193,11 @@ export default function Post({ post }) {
             />
           ))}
       </div>
+      <PostOptionsModal
+        open={modalIsOpen}
+        onClose={closeModalHandler}
+        post={post}
+      />
     </div>
   );
 }

@@ -1,0 +1,89 @@
+.postOptionsModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+}
+.postOptionsModal {
+  position: fixed;
+  width: 55vw;
+  height: 30vh;
+  border-radius: 15px;
+  top: 40%;
+  left: 20%;
+  background-color: white;
+  z-index: 1000;
+}
+.outerOptionsModal {
+  padding-left: 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.editPostOptionContainer {
+  width: 33%;
+}
+.reportPostContainer {
+  width: 33%;
+}
+.deletePostContainer {
+  width: 33%;
+}
+.unfollowUserPostContainer {
+  width: 33%;
+}
+.editPostOption,
+.reportPostOption,
+.deletePostOption,
+.unfollowUserPostOption {
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  justify-content: center;
+}
+.editPostOption p,
+.reportPostOption p,
+.deletePostOption p,
+.unfollowUserPostOption p {
+  text-align: left;
+  justify-self: center;
+  width: 85%;
+  margin-bottom: 10px;
+}
+.editPostOption button,
+.reportPostOption button,
+.deletePostOption button,
+.unfollowUserPostOption button {
+  border: none;
+  padding: 7px;
+  border-radius: 5px;
+  transition: 0.5s;
+  margin-bottom: 10px;
+  width: 85%;
+  background-size: 200% auto;
+  background-image: linear-gradient(to right, #662d8c, #ed1e79);
+  font-weight: 500;
+  margin-right: 20px;
+  font-size: 18px;
+  cursor: pointer;
+  color: white;
+}
+.editPostOption button:hover,
+.reportPostOption button:hover,
+.deletePostOption button:hover,
+.unfollowUserPostOption button:hover {
+  background-position: right center;
+  box-shadow: 0px 5px 20px -5px #662d8c;
+  transform: translateY(-2px);
+}
+.editPostOption h1,
+.reportPostOption h1,
+.deletePostOption h1,
+.unfollowUserPostOption h1 {
+  justify-self: flex-start;
+}

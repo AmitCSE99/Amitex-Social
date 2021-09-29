@@ -20,6 +20,7 @@ export default function Profile() {
     Follow,
     Unfollow,
     logout,
+    RemoveRequest,
   } = useContext(AuthContext);
   const username = useParams().username;
   const [followed, setFollowed] = useState(false);
@@ -27,7 +28,10 @@ export default function Profile() {
   const [userFollowers, setUserFollowers] = useState(null);
   const [currentUserFollowing, setCurrentUserFollowing] = useState(null);
   const [currentUserFollowers, setCurrentUserFollowers] = useState(null);
+  const [alreadyRequested, setAlreadyRequested] = useState(false);
+  const [gotRequest, setGotRequest] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [iAmFollowing, setIamFollowing] = useState(false);
   useEffect(() => {
     const fetchUser = async () => {
       if (currentUser) {
@@ -62,6 +66,18 @@ export default function Profile() {
           setCurrentUserFollowing(responseUser.data.user.following.length);
           setCurrentUserFollowers(responseUser.data.user.followers.length);
           setFollowed(responseUser.data.user.following.includes(user._id));
+          console.log(followed);
+          console.log(response.data.user.followers);
+          setAlreadyRequested(
+            response.data.user.requests.includes(currentUser._id)
+          );
+          setGotRequest(
+            responseUser.data.user.requests.includes(response.data.user._id)
+          );
+          console.log(currentUser);
+          console.log(currentUser.requests);
+          console.log(alreadyRequested);
+          console.log(gotRequest);
           setIsFetching(false);
           console.log(followed);
         } catch (err) {
@@ -71,26 +87,51 @@ export default function Profile() {
       }
     };
     fetchUser();
-  }, [username, user._id, followed]);
+  }, [username, user._id, followed, alreadyRequested, gotRequest]);
 
   // useEffect(() => {
   //   setFollowed(currentUser.following.includes(user?.id));
   // }, [currentUser, user.id]);
   const handleClick = async () => {
     try {
-      if (followed) {
-        await axios.put("/user/" + user._id + "/unfollow", {
+      if (alreadyRequested) {
+        await axios.put("/user/" + user._id + "/cancelRequest", {
           userId: currentUser._id,
         });
+        setAlreadyRequested(false);
         // dispatch({ type: "UNFOLLOW", payload: user._id });
-        Unfollow(user._id);
+        // Unfollow(user._id);
       } else {
-        await axios.put("/user/" + user._id + "/follow", {
+        await axios.put("/user/" + user._id + "/request", {
           userId: currentUser._id,
         });
-        Follow(user._id);
+        setAlreadyRequested(true);
+        // Follow(user._id);
       }
-      setFollowed(!followed);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleClickAccept = async () => {
+    try {
+      await axios.put("/user/" + user._id + "/acceptRequest", {
+        userId: currentUser._id,
+      });
+      RemoveRequest(user._id);
+      setGotRequest(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleClickReject = async () => {
+    try {
+      await axios.put("/user/" + user._id + "/rejectRequest", {
+        userId: currentUser._id,
+      });
+      RemoveRequest(user._id);
+      setGotRequest(false);
     } catch (err) {
       console.log(err);
     }
@@ -161,11 +202,37 @@ export default function Profile() {
                   <h4 className="profileInfoName">{user.name}</h4>
                   <span className="profileInfoDesc">@{user.username}</span>
                   <span className="profileInfoDesc">{user.desc}</span>
-                  {username !== currentUser.username && (
+                  {username !== currentUser.username && !followed && (
                     <button className="followButton" onClick={handleClick}>
-                      {followed ? "Unfollow" : "Follow"}
-                      {followed ? <Remove /> : <Add />}
+                      {alreadyRequested && !followed && "Already Requested"}
+                      {!alreadyRequested && !followed && "Send Follow Request"}
+                      {/* {followed ? "Unfollow" : "Follow"}
+                      {followed ? <Remove /> : <Add />} */}
+                      {/* {followed && "Unfollow"} */}
                     </button>
+                  )}
+                  {username !== currentUser.username && gotRequest && (
+                    <div className="gotRequestOptions">
+                      <p>The user has sent you follow request</p>
+                      <div className="profileOptionsContainer">
+                        <button
+                          className="followButton"
+                          onClick={handleClickAccept}
+                        >
+                          Accept Request
+                          {/* {followed ? "Unfollow" : "Follow"}
+                      {followed ? <Remove /> : <Add />} */}
+                        </button>
+                        <button
+                          className="followButton"
+                          onClick={handleClickReject}
+                        >
+                          Reject Request
+                          {/* {followed ? "Unfollow" : "Follow"}
+                      {followed ? <Remove /> : <Add />} */}
+                        </button>
+                      </div>
+                    </div>
                   )}
 
                   {username === currentUser.username && (

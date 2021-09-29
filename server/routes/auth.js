@@ -57,6 +57,7 @@ router.post("/login", async (req, res) => {
       city: user.city,
       followers: user.followers,
       following: user.following,
+      requests: user.requests,
       coverPicture: user.coverPicture,
       name: user.name,
     };
