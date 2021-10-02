@@ -52,14 +52,7 @@ router.post("/login", async (req, res) => {
       username: user.username,
       email: user.email,
       password: user.password,
-      profilePicture: user.profilePicture,
       _id: user._id,
-      city: user.city,
-      followers: user.followers,
-      following: user.following,
-      requests: user.requests,
-      coverPicture: user.coverPicture,
-      name: user.name,
     };
 
     const accessToken = jwt.sign(
@@ -118,13 +111,7 @@ router.post("/token", async (req, res) => {
       username: user.username,
       email: user.email,
       password: user.password,
-      profilePicture: user.profilePicture,
       _id: user._id,
-      city: user.city,
-      followers: user.followers,
-      following: user.following,
-      coverPicture: user.coverPicture,
-      name: user.name,
     };
     const accessToken = jwt.sign(
       user_payload,
@@ -139,16 +126,28 @@ router.post("/token", async (req, res) => {
   });
 });
 
-router.get("/validateToken", (req, res) => {
+router.get("/validateToken", async (req, res) => {
   const accessToken = req.query.token;
-  jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) {
-      return res
-        .status(200)
-        .json({ success: false, msg: "The token has expired" });
+  jwt.verify(
+    accessToken,
+    process.env.ACCESS_TOKEN_SECRET,
+    async (err, tokenUser) => {
+      if (err) {
+        return res
+          .status(200)
+          .json({ success: false, msg: "The token has expired" });
+      }
+      try {
+        console.log(tokenUser._id);
+        const user = await User.findById(tokenUser._id);
+        res.status(200).json({ success: true, user });
+      } catch (err) {
+        res
+          .status(500)
+          .json({ success: false, message: "Something went wrong" });
+      }
     }
-    return res.status(200).json({ success: true, user });
-  });
+  );
 });
 
 module.exports = router;

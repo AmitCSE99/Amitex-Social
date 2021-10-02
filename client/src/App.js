@@ -23,8 +23,9 @@ function App() {
   const [user, setUser] = useState(null);
   const [isFetching, setIsFetching] = useState(false);
   const [fetchAuth, setFetchAuth] = useState(false);
-  const [followings, setFollowings] = useState([]);
-  const [requests, setRequests] = useState([]);
+  const [followings, setFollowings] = useState(null);
+  const [followers, setFollowers] = useState(null);
+  const [requests, setRequests] = useState(null);
   const [error, setError] = useState(null);
 
   const login = useCallback((email, password) => {
@@ -41,7 +42,21 @@ function App() {
         setError(response.data.message);
         setFetchAuth(false);
       } else {
-        setUser(response.data.user_payload);
+        const newResponse = await axios.get(
+          "http://localhost:5000/api/auth/validateToken",
+          {
+            params: {
+              token: response.data.accessToken,
+            },
+          }
+        );
+        console.log(newResponse.data.user);
+        setUser(newResponse.data.user);
+        setFollowings(newResponse.data.user.following);
+        setFollowers(newResponse.data.user.followers);
+        setRequests(newResponse.data.user.requests);
+        console.log(user);
+        console.log(followers);
         localStorage.setItem("accessToken", response.data.accessToken);
         setFetchAuth(false);
       }
@@ -55,26 +70,30 @@ function App() {
   }, []);
 
   const Follow = useCallback((userId) => {
-    let updateFollowings = followings;
-    updateFollowings.push(userId);
-    setFollowings(updateFollowings);
+    // console.log("Before: ", followers);
+    // let updateFollowers = followers;
+    // updateFollowers.push(userId);
+    // console.log("After: ", followers);
+    setFollowers(userId);
   }, []);
 
   const RemoveRequest = useCallback((userId) => {
-    let updateRequests = requests;
-    updateRequests.filter((uid) => {
-      console.log(uid);
-      return uid !== userId;
-    });
-    setRequests(updateRequests);
+    // let updateRequests = requests;
+    // updateRequests = requests.filter(uid =>
+    //   uid.toString() !== userId.toString()
+    // );
+    // console.log(updateRequests);
+    setRequests(userId);
   }, []);
 
   const Unfollow = useCallback((userId) => {
-    let updateFollowings = followings;
-    updateFollowings.filter((uid) => {
-      return uid !== userId;
-    });
-    setFollowings(updateFollowings);
+    // console.log("Before: ", followers);
+    // let updateFollowers = followers;
+    // updateFollowers.filter((uid) => {
+    //   return uid !== userId;
+    // });
+    // console.log(updateFollowers);
+    setFollowers(userId);
   }, []);
 
   useEffect(() => {
@@ -90,16 +109,19 @@ function App() {
         }
       );
       if (response.data.success) {
+        console.log(response.data.user.followers);
         setUser(response.data.user);
         setFollowings(response.data.user.following);
         setRequests(response.data.user.requests);
+        setFollowers(response.data.user.followers);
         console.log(requests);
+        console.log(followings);
+        console.log(user);
+        setIsFetching(false);
       } else {
         setUser(null);
+        setIsFetching(false);
       }
-      console.log(followings);
-      console.log(user);
-      setIsFetching(false);
     };
     getAndValidateUser();
   }, []);
@@ -124,6 +146,9 @@ function App() {
             user: user,
             error: error,
             isFetching: fetchAuth,
+            requests: requests,
+            followers: followers,
+            followings: followings,
             login: login,
             logout: logout,
             Follow: Follow,
