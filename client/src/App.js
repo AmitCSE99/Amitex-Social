@@ -69,12 +69,13 @@ function App() {
     setUser(null);
   }, []);
 
-  const Follow = useCallback((userId) => {
+  const Follow = useCallback((userId, newRequestList) => {
     // console.log("Before: ", followers);
     // let updateFollowers = followers;
     // updateFollowers.push(userId);
     // console.log("After: ", followers);
     setFollowers(userId);
+    setRequests(newRequestList);
   }, []);
 
   const RemoveRequest = useCallback((userId) => {

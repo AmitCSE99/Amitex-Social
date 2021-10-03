@@ -16,16 +16,22 @@ import { useContext, useEffect, useState } from "react";
 import AuthContext from "../../context/AuthContext";
 import axios from "axios";
 export default function Sidebar() {
-  const { user: currentUser, isFetching, error } = useContext(AuthContext);
-  const [followers, setFollowers] = useState(null);
+  const {
+    user: currentUser,
+    isFetching,
+    error,
+    followers,
+  } = useContext(AuthContext);
+  const [userFollowers, setUserFollowers] = useState(null);
   useEffect(() => {
     const fetchFollowers = async () => {
-      const response = await axios.get(`/user/${currentUser._id}`);
-      setFollowers(response.data.followers);
-      console.log(response.data);
+      if (followers) {
+        const response = await axios.get(`/user/${currentUser._id}`);
+        setUserFollowers(response.data.followers);
+      }
     };
     fetchFollowers();
-  }, []);
+  }, [followers]);
 
   return (
     <div className="sidebar">
@@ -72,8 +78,8 @@ export default function Sidebar() {
         <hr className="sidebarHr" />
         <h3 className="sidebarFriendListHeading">Your Followers</h3>
         <ul className="sidebarFriendList">
-          {followers &&
-            followers.map((u) => <CloseFriends key={u._id} user={u} />)}
+          {userFollowers &&
+            userFollowers.map((u) => <CloseFriends key={u._id} user={u} />)}
         </ul>
       </div>
     </div>

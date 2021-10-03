@@ -78,17 +78,7 @@ export default function Profile() {
       }
     };
     fetchUser();
-  }, [
-    username,
-    user._id,
-    followed,
-    alreadyRequested,
-    gotRequest,
-    isFollower,
-    requests,
-    followers,
-    followings,
-  ]);
+  }, [followed, isFollower, followers, followings]);
 
   const handleClick = async () => {
     try {
@@ -113,12 +103,16 @@ export default function Profile() {
       await axios.put("/user/" + user._id + "/acceptRequest", {
         userId: currentUser._id,
       });
-      followers.push(user._id);
+
+      // followers.push(user._id);
+      // const temp = followers.push(user._id);
+      // console.log(temp);
+      const newFollowersList = [...followers, user._id];
       const newRequestList = requests.filter(
         (uid) => uid.toString() !== user._id.toString()
       );
-      RemoveRequest(newRequestList);
-      Follow(followers);
+      // RemoveRequest(newRequestList);
+      Follow(newFollowersList, newRequestList);
     } catch (err) {
       console.log(err);
     }
@@ -133,6 +127,7 @@ export default function Profile() {
         (uid) => uid.toString() !== user._id.toString()
       );
       RemoveRequest(newRequestList);
+      setGotRequest(false);
     } catch (err) {
       console.log(err);
     }
