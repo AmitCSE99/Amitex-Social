@@ -70,32 +70,21 @@ function App() {
   }, []);
 
   const Follow = useCallback((userId, newRequestList) => {
-    // console.log("Before: ", followers);
-    // let updateFollowers = followers;
-    // updateFollowers.push(userId);
-    // console.log("After: ", followers);
     setFollowers(userId);
     setRequests(newRequestList);
   }, []);
 
   const RemoveRequest = useCallback((userId) => {
-    // let updateRequests = requests;
-    // updateRequests = requests.filter(uid =>
-    //   uid.toString() !== userId.toString()
-    // );
-    // console.log(updateRequests);
     setRequests(userId);
   }, []);
 
   const Unfollow = useCallback((userId) => {
-    // console.log("Before: ", followers);
-    // let updateFollowers = followers;
-    // updateFollowers.filter((uid) => {
-    //   return uid !== userId;
-    // });
-    // console.log(updateFollowers);
     setFollowers(userId);
   }, []);
+
+  const StopFollowing = useCallback((newFollowingList) => {
+    setFollowings(newFollowingList);
+  });
 
   useEffect(() => {
     const getAndValidateUser = async () => {
@@ -155,6 +144,7 @@ function App() {
             Follow: Follow,
             Unfollow: Unfollow,
             RemoveRequest: RemoveRequest,
+            StopFollowing: StopFollowing,
           }}
         >
           <Router>

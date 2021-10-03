@@ -24,6 +24,7 @@ export default function Profile() {
     Unfollow,
     logout,
     RemoveRequest,
+    StopFollowing,
   } = useContext(AuthContext);
   const username = useParams().username;
   const [followed, setFollowed] = useState(false);
@@ -67,6 +68,7 @@ export default function Profile() {
             response.data.user.requests.includes(currentUser._id)
           );
           setGotRequest(requests.includes(response.data.user._id));
+
           setIsFetching(false);
           console.log(followed);
         } catch (err) {
@@ -78,7 +80,7 @@ export default function Profile() {
       }
     };
     fetchUser();
-  }, [followed, isFollower, followers, followings]);
+  }, []);
 
   const handleClick = async () => {
     try {
@@ -103,16 +105,15 @@ export default function Profile() {
       await axios.put("/user/" + user._id + "/acceptRequest", {
         userId: currentUser._id,
       });
-
-      // followers.push(user._id);
-      // const temp = followers.push(user._id);
-      // console.log(temp);
       const newFollowersList = [...followers, user._id];
       const newRequestList = requests.filter(
         (uid) => uid.toString() !== user._id.toString()
       );
-      // RemoveRequest(newRequestList);
       Follow(newFollowersList, newRequestList);
+      let newUserFollowings = userFollowing + 1;
+      setUserFollowing(newUserFollowings);
+      setGotRequest(false);
+      setIsFollower(true);
     } catch (err) {
       console.log(err);
     }
@@ -141,6 +142,25 @@ export default function Profile() {
       const newFollowers = followers.filter((uid) => uid !== user._id);
       console.log(newFollowers);
       Unfollow(newFollowers);
+      let newUserFollowings = userFollowing - 1;
+      setUserFollowing(newUserFollowings);
+      setIsFollower(false);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleClickStopFollowing = async () => {
+    try {
+      await axios.put("/user/" + user._id + "/stopFollowing", {
+        userId: currentUser._id,
+      });
+      const newFollowings = followings.filter((uid) => uid !== user._id);
+      StopFollowing(newFollowings);
+      let newUserFollowers = userFollowers - 1;
+      setUserFollowers(newUserFollowers);
+      setAlreadyRequested(false);
+      setFollowed(false);
     } catch (err) {
       console.log(err);
     }
@@ -221,9 +241,22 @@ export default function Profile() {
                     )}
                   {!isFetching &&
                     username !== currentUser.username &&
+                    followed && (
+                      <button
+                        className="followButton"
+                        onClick={handleClickStopFollowing}
+                      >
+                        Stop Following
+                      </button>
+                    )}
+                  {!isFetching &&
+                    username !== currentUser.username &&
                     gotRequest && (
                       <div className="gotRequestOptions">
-                        <p>The user has sent you follow request</p>
+                        <p>
+                          {user.name.split(" ")[0]} has sent you a follow
+                          request
+                        </p>
                         <div className="profileOptionsContainer">
                           <button
                             className="followButton"
