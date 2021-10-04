@@ -80,7 +80,7 @@ export default function Profile() {
       }
     };
     fetchUser();
-  }, []);
+  }, [username]);
 
   const handleClick = async () => {
     try {

@@ -207,12 +207,10 @@ router.put("/:id/stopFollowing", async (req, res) => {
       if (currentUser.following.includes(req.params.id)) {
         await user.updateOne({ $pull: { followers: req.body.userId } });
         await currentUser.updateOne({ $pull: { following: req.params.id } });
-        res
-          .status(200)
-          .json({
-            success: true,
-            message: "Successfully stopped following the user",
-          });
+        res.status(200).json({
+          success: true,
+          message: "Successfully stopped following the user",
+        });
       } else {
         res
           .status(403)
@@ -254,6 +252,17 @@ router.get("/followings/:username", async (req, res) => {
     res.status(200).json({ followings });
   } catch (err) {
     res.status(500).json({ message: err });
+  }
+});
+
+router.get("/:id/getRequests", async (req, res) => {
+  try {
+    const currentUser = await User.findById(req.params.id).populate("requests");
+    res
+      .status(200)
+      .json({ success: true, requests: currentUser.requests.reverse() });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Something went wrong!" });
   }
 });
 

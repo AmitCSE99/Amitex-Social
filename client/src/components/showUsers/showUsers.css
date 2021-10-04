@@ -10,6 +10,7 @@
 }
 .user {
   display: flex;
+  width: 100%;
   height: 100px;
   align-items: center;
   /* justify-content: center; */
@@ -33,4 +34,64 @@
 .userDetailsName:hover {
   text-decoration: underline;
   cursor: pointer;
+}
+.requestButtonContainer {
+  display: flex;
+  width: 70%;
+  align-items: center;
+  justify-content: flex-end;
+}
+.requestAcceptButton {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  border: none;
+  transition: 0.5s;
+  border-radius: 5px;
+  background-size: 200% auto;
+  padding: 10px 10px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 0 20px #eee;
+
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+
+  background-image: linear-gradient(to right, #662d8c, #ed1e79);
+}
+.requestAcceptButton:hover {
+  background-position: right center;
+}
+.disabledButton:disabled {
+  background: rgb(202, 202, 202);
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #eee;
+  padding: 10px 10px;
+  cursor: not-allowed;
+}
+.requestRejectButton {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+  border: none;
+  transition: 0.5s;
+  border-radius: 5px;
+  background-size: 200% auto;
+  padding: 10px 10px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 0 20px #eee;
+
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+
+  background-image: linear-gradient(to right, #662d8c, #ed1e79);
+}
+.requestRejectButton:hover {
+  background-position: right center;
 }

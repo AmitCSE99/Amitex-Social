@@ -17,6 +17,7 @@ import Followers from "./pages/Followers/Followers";
 import Followings from "./pages/followings/followings";
 import FindUsers from "./pages/findUsers/FindUsers";
 import axios from "axios";
+import FriendRequests from "./pages/friendRequests/FriendRequests";
 
 function App() {
   // const { user } = useContext(AuthContext);
@@ -169,6 +170,9 @@ function App() {
               </Route>
               <Route path="/findUsers/:name">
                 {user === null ? <Login /> : <FindUsers />}
+              </Route>
+              <Route path="/friendRequests">
+                {user === null ? <Login /> : <FriendRequests />}
               </Route>
             </Switch>
           </Router>
