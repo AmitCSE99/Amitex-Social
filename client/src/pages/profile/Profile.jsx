@@ -36,7 +36,14 @@ export default function Profile() {
   const [gotRequest, setGotRequest] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [isFollower, setIsFollower] = useState(false);
-  const [iAmFollowing, setIamFollowing] = useState(false);
+  const [sendRequestLoading, setSendRequestLoading] = useState(false);
+  const [sendAcceptRequestLoading, setSendAcceptRequestLoading] =
+    useState(false);
+  const [sendRejectRequestLoading, setSendRejectRequestLoading] =
+    useState(false);
+  const [requestRemoveLoading, setRequestRemoveLoading] = useState(false);
+  const [stopFollowingRequestLoading, setStopFollowingRequestLoading] =
+    useState(false);
   useEffect(() => {
     const fetchUser = async () => {
       setIsFetching(true);
@@ -84,6 +91,7 @@ export default function Profile() {
 
   const handleClick = async () => {
     try {
+      setSendRequestLoading(true);
       if (alreadyRequested) {
         await axios.put("/user/" + user._id + "/cancelRequest", {
           userId: currentUser._id,
@@ -95,12 +103,14 @@ export default function Profile() {
         });
         setAlreadyRequested(!alreadyRequested);
       }
+      setSendRequestLoading(false);
     } catch (err) {
       console.log(err);
     }
   };
 
   const handleClickAccept = async () => {
+    setSendAcceptRequestLoading(true);
     try {
       await axios.put("/user/" + user._id + "/acceptRequest", {
         userId: currentUser._id,
@@ -114,12 +124,15 @@ export default function Profile() {
       setUserFollowing(newUserFollowings);
       setGotRequest(false);
       setIsFollower(true);
+      setSendAcceptRequestLoading(false);
     } catch (err) {
       console.log(err);
+      setSendAcceptRequestLoading(false);
     }
   };
 
   const handleClickReject = async () => {
+    setSendRejectRequestLoading(true);
     try {
       await axios.put("/user/" + user._id + "/rejectRequest", {
         userId: currentUser._id,
@@ -129,12 +142,15 @@ export default function Profile() {
       );
       RemoveRequest(newRequestList);
       setGotRequest(false);
+      setSendRejectRequestLoading(false);
     } catch (err) {
       console.log(err);
+      setSendRejectRequestLoading(false);
     }
   };
 
   const handleClickRemoveFollower = async () => {
+    setRequestRemoveLoading(true);
     try {
       await axios.put("/user/" + user._id + "/unfollow", {
         userId: currentUser._id,
@@ -145,12 +161,15 @@ export default function Profile() {
       let newUserFollowings = userFollowing - 1;
       setUserFollowing(newUserFollowings);
       setIsFollower(false);
+      setRequestRemoveLoading(false);
     } catch (err) {
       console.log(err);
+      setRequestRemoveLoading(false);
     }
   };
 
   const handleClickStopFollowing = async () => {
+    setStopFollowingRequestLoading(true);
     try {
       await axios.put("/user/" + user._id + "/stopFollowing", {
         userId: currentUser._id,
@@ -161,8 +180,10 @@ export default function Profile() {
       setUserFollowers(newUserFollowers);
       setAlreadyRequested(false);
       setFollowed(false);
+      setStopFollowingRequestLoading(false);
     } catch (err) {
       console.log(err);
+      setStopFollowingRequestLoading(false);
     }
   };
 
@@ -234,9 +255,25 @@ export default function Profile() {
                   {!isFetching &&
                     username !== currentUser.username &&
                     !followed && (
-                      <button className="followButton" onClick={handleClick}>
-                        {alreadyRequested && "Already Requested"}
-                        {!alreadyRequested && "Send Follow Request"}
+                      <button
+                        className="followButton"
+                        disabled={
+                          sendAcceptRequestLoading ||
+                          sendAcceptRequestLoading ||
+                          sendRequestLoading ||
+                          requestRemoveLoading
+                        }
+                        onClick={handleClick}
+                      >
+                        {alreadyRequested &&
+                          !sendRequestLoading &&
+                          "Already Requested"}
+                        {!alreadyRequested &&
+                          !sendRequestLoading &&
+                          "Send Follow Request"}
+                        {sendRequestLoading && (
+                          <CircularProgress color="white" size="20px" />
+                        )}
                       </button>
                     )}
                   {!isFetching &&
@@ -245,8 +282,18 @@ export default function Profile() {
                       <button
                         className="followButton"
                         onClick={handleClickStopFollowing}
+                        disabled={
+                          sendAcceptRequestLoading ||
+                          sendAcceptRequestLoading ||
+                          stopFollowingRequestLoading ||
+                          requestRemoveLoading
+                        }
                       >
-                        Stop Following
+                        {stopFollowingRequestLoading ? (
+                          <CircularProgress color="white" size="20px" />
+                        ) : (
+                          "Stop Following"
+                        )}
                       </button>
                     )}
                   {!isFetching &&
@@ -260,25 +307,54 @@ export default function Profile() {
                         <div className="profileOptionsContainer">
                           <button
                             className="followButton"
+                            disabled={
+                              sendRejectRequestLoading ||
+                              sendAcceptRequestLoading ||
+                              sendRequestLoading ||
+                              stopFollowingRequestLoading
+                            }
                             onClick={handleClickAccept}
                           >
-                            Accept Request
+                            {sendAcceptRequestLoading ? (
+                              <CircularProgress color="white" size="20px" />
+                            ) : (
+                              "Accept Request"
+                            )}
                           </button>
                           <button
                             className="followButton"
+                            disabled={
+                              sendAcceptRequestLoading ||
+                              sendRejectRequestLoading ||
+                              sendRequestLoading ||
+                              stopFollowingRequestLoading
+                            }
                             onClick={handleClickReject}
                           >
-                            Reject Request
+                            {sendRejectRequestLoading ? (
+                              <CircularProgress color="white" size="20px" />
+                            ) : (
+                              "Reject Request"
+                            )}
                           </button>
                         </div>
                       </div>
                     )}
                   {username != currentUser.username && isFollower && (
                     <button
+                      disabled={
+                        requestRemoveLoading ||
+                        sendRequestLoading ||
+                        stopFollowingRequestLoading
+                      }
                       className="followButton"
                       onClick={handleClickRemoveFollower}
                     >
-                      Remove follower
+                      {requestRemoveLoading ? (
+                        <CircularProgress color="white" size="20px" />
+                      ) : (
+                        "Remove Follower"
+                      )}
                     </button>
                   )}
 

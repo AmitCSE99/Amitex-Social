@@ -63,8 +63,10 @@
   border: none;
   transition: 0.5s;
   border-radius: 5px;
+  width: 35%;
   background-size: 200% auto;
   padding: 10px 10px;
+  justify-content: center;
   display: flex;
   align-items: center;
   box-shadow: 0 0 20px #eee;
@@ -79,11 +81,11 @@
   background-position: right center;
 }
 .followButton:disabled {
-  background-image: linear-gradient(
+  /* background-image: linear-gradient(
     to right,
     rgb(165, 165, 165),
     rgb(150, 150, 150)
-  );
+  ); */
   cursor: not-allowed;
 }
 /* .followButtonStyle {
