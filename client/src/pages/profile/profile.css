@@ -81,16 +81,8 @@
   background-position: right center;
 }
 .followButton:disabled {
-  /* background-image: linear-gradient(
-    to right,
-    rgb(165, 165, 165),
-    rgb(150, 150, 150)
-  ); */
   cursor: not-allowed;
 }
-/* .followButtonStyle {
-  background-image: linear-gradient(to right, #4b086d 0%, #acc0fe 100%);
-} */
 .profileEditor {
   display: flex;
   width: 50%;
