@@ -76,6 +76,42 @@ const UserSchema = new mongoose.Schema(
       type: Number,
       enum: [1, 2, 3],
     },
+    notifications: {
+      type: [
+        {
+          _id: false,
+          messageType: {
+            type: Number,
+            default: 0,
+          },
+          user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+          },
+          post: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post",
+          },
+          creationTime: {
+            type: Date,
+            default: Date.now(),
+          },
+          status: {
+            type: Number,
+            default: 0,
+          },
+          otherLikes: {
+            type: Number,
+            default: 0,
+          },
+          otherComments: {
+            type: Number,
+            default: 0,
+          },
+        },
+      ],
+      default: [],
+    },
   },
   { timestamps: true }
 );

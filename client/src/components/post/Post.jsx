@@ -53,6 +53,7 @@ export default function Post({ post }) {
     try {
       await axios.put("/posts/" + post._id + "/like", {
         userId: currentUser._id,
+        postUserId: post.user._id,
       });
     } catch (err) {}
     setLike(isLiked ? like - 1 : like + 1);
