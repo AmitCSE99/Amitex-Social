@@ -70,9 +70,10 @@ router.get("/:userId", async (req, res) => {
 
 router.get("/findUsers/:name", async (req, res) => {
   const name = req.params.name;
+  var regex = new RegExp(name, "i");
   try {
     const users = await User.find({
-      name: { $regex: "^" + name },
+      name: regex,
     });
     res.status(200).json({ users });
   } catch (err) {
