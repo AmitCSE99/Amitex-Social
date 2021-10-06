@@ -10,8 +10,24 @@ import "./profile.css";
 import AuthContext from "../../context/AuthContext";
 import { Add, Remove } from "@material-ui/icons";
 import { CircularProgress } from "@material-ui/core";
+import SearchFriends from "../../components/searchFriends/SearchFriends";
 
 export default function Profile() {
+  const [isUserSearching, setIsUserSearching] = useState(false);
+  const [usernameSearch, setUsernameSearch] = useState(null);
+
+  const setSearch = () => {
+    setIsUserSearching(true);
+  };
+
+  const stopSearch = () => {
+    setIsUserSearching(false);
+  };
+
+  const setUserSearch = (name) => {
+    setUsernameSearch(name);
+  };
+
   const history = useHistory();
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const [user, setUser] = useState({});
@@ -209,200 +225,211 @@ export default function Profile() {
           <CircularProgress></CircularProgress>
         </div>
       )}
-      {currentUser && <Topbar></Topbar>}
+      {currentUser && (
+        <Topbar
+          setSearch={setSearch}
+          stopSearch={stopSearch}
+          setUserSearch={setUserSearch}
+        ></Topbar>
+      )}
       {currentUser && (
         <div className="profile">
           <Sidebar></Sidebar>
-          <div className={isFetching ? "profileRightLoading" : "profileRight"}>
-            {isFetching && (
-              <div
-                style={{
-                  height: "100vh",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <CircularProgress></CircularProgress>
-              </div>
-            )}
-            {!isFetching && user && (
-              <div className="profileRightTop">
-                <div className="profileCover">
-                  <img
-                    className="profileCoverImage"
-                    src={
-                      user.coverPicture
-                        ? user.coverPicture
-                        : PF + "person/noCover.png"
-                    }
-                    alt=""
-                  />
-                  <img
-                    className="profileUserImage"
-                    src={
-                      user.profilePicture
-                        ? user.profilePicture
-                        : PF + "person/noAvatar.png"
-                    }
-                    alt=""
-                  />
+          {!isUserSearching && (
+            <div
+              className={isFetching ? "profileRightLoading" : "profileRight"}
+            >
+              {isFetching && (
+                <div
+                  style={{
+                    height: "100vh",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CircularProgress></CircularProgress>
                 </div>
-                <div className="profileInfo">
-                  <h4 className="profileInfoName">{user.name}</h4>
-                  <span className="profileInfoDesc">@{user.username}</span>
-                  <span className="profileInfoDesc">{user.desc}</span>
-                  {!isFetching &&
-                    username !== currentUser.username &&
-                    !followed && (
+              )}
+              {!isFetching && user && (
+                <div className="profileRightTop">
+                  <div className="profileCover">
+                    <img
+                      className="profileCoverImage"
+                      src={
+                        user.coverPicture
+                          ? user.coverPicture
+                          : PF + "person/noCover.png"
+                      }
+                      alt=""
+                    />
+                    <img
+                      className="profileUserImage"
+                      src={
+                        user.profilePicture
+                          ? user.profilePicture
+                          : PF + "person/noAvatar.png"
+                      }
+                      alt=""
+                    />
+                  </div>
+                  <div className="profileInfo">
+                    <h4 className="profileInfoName">{user.name}</h4>
+                    <span className="profileInfoDesc">@{user.username}</span>
+                    <span className="profileInfoDesc">{user.desc}</span>
+                    {!isFetching &&
+                      username !== currentUser.username &&
+                      !followed && (
+                        <button
+                          className="followButton"
+                          disabled={
+                            sendAcceptRequestLoading ||
+                            sendAcceptRequestLoading ||
+                            sendRequestLoading ||
+                            requestRemoveLoading
+                          }
+                          onClick={handleClick}
+                        >
+                          {alreadyRequested &&
+                            !sendRequestLoading &&
+                            "Already Requested"}
+                          {!alreadyRequested &&
+                            !sendRequestLoading &&
+                            "Send Follow Request"}
+                          {sendRequestLoading && (
+                            <CircularProgress color="white" size="20px" />
+                          )}
+                        </button>
+                      )}
+                    {!isFetching &&
+                      username !== currentUser.username &&
+                      followed && (
+                        <button
+                          className="followButton"
+                          onClick={handleClickStopFollowing}
+                          disabled={
+                            sendAcceptRequestLoading ||
+                            sendAcceptRequestLoading ||
+                            stopFollowingRequestLoading ||
+                            requestRemoveLoading
+                          }
+                        >
+                          {stopFollowingRequestLoading ? (
+                            <CircularProgress color="white" size="20px" />
+                          ) : (
+                            "Stop Following"
+                          )}
+                        </button>
+                      )}
+                    {!isFetching &&
+                      username !== currentUser.username &&
+                      gotRequest && (
+                        <div className="gotRequestOptions">
+                          <p>
+                            {user.name.split(" ")[0]} has sent you a follow
+                            request
+                          </p>
+                          <div className="profileOptionsContainer">
+                            <button
+                              className="followButton"
+                              disabled={
+                                sendRejectRequestLoading ||
+                                sendAcceptRequestLoading ||
+                                sendRequestLoading ||
+                                stopFollowingRequestLoading
+                              }
+                              onClick={handleClickAccept}
+                            >
+                              {sendAcceptRequestLoading ? (
+                                <CircularProgress color="white" size="20px" />
+                              ) : (
+                                "Accept Request"
+                              )}
+                            </button>
+                            <button
+                              className="followButton"
+                              disabled={
+                                sendAcceptRequestLoading ||
+                                sendRejectRequestLoading ||
+                                sendRequestLoading ||
+                                stopFollowingRequestLoading
+                              }
+                              onClick={handleClickReject}
+                            >
+                              {sendRejectRequestLoading ? (
+                                <CircularProgress color="white" size="20px" />
+                              ) : (
+                                "Reject Request"
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    {username != currentUser.username && isFollower && (
                       <button
-                        className="followButton"
                         disabled={
-                          sendAcceptRequestLoading ||
-                          sendAcceptRequestLoading ||
+                          requestRemoveLoading ||
                           sendRequestLoading ||
-                          requestRemoveLoading
+                          stopFollowingRequestLoading
                         }
-                        onClick={handleClick}
-                      >
-                        {alreadyRequested &&
-                          !sendRequestLoading &&
-                          "Already Requested"}
-                        {!alreadyRequested &&
-                          !sendRequestLoading &&
-                          "Send Follow Request"}
-                        {sendRequestLoading && (
-                          <CircularProgress color="white" size="20px" />
-                        )}
-                      </button>
-                    )}
-                  {!isFetching &&
-                    username !== currentUser.username &&
-                    followed && (
-                      <button
                         className="followButton"
-                        onClick={handleClickStopFollowing}
-                        disabled={
-                          sendAcceptRequestLoading ||
-                          sendAcceptRequestLoading ||
-                          stopFollowingRequestLoading ||
-                          requestRemoveLoading
-                        }
+                        onClick={handleClickRemoveFollower}
                       >
-                        {stopFollowingRequestLoading ? (
+                        {requestRemoveLoading ? (
                           <CircularProgress color="white" size="20px" />
                         ) : (
-                          "Stop Following"
+                          "Remove Follower"
                         )}
                       </button>
                     )}
-                  {!isFetching &&
-                    username !== currentUser.username &&
-                    gotRequest && (
-                      <div className="gotRequestOptions">
-                        <p>
-                          {user.name.split(" ")[0]} has sent you a follow
-                          request
-                        </p>
-                        <div className="profileOptionsContainer">
-                          <button
-                            className="followButton"
-                            disabled={
-                              sendRejectRequestLoading ||
-                              sendAcceptRequestLoading ||
-                              sendRequestLoading ||
-                              stopFollowingRequestLoading
-                            }
-                            onClick={handleClickAccept}
-                          >
-                            {sendAcceptRequestLoading ? (
-                              <CircularProgress color="white" size="20px" />
-                            ) : (
-                              "Accept Request"
-                            )}
-                          </button>
-                          <button
-                            className="followButton"
-                            disabled={
-                              sendAcceptRequestLoading ||
-                              sendRejectRequestLoading ||
-                              sendRequestLoading ||
-                              stopFollowingRequestLoading
-                            }
-                            onClick={handleClickReject}
-                          >
-                            {sendRejectRequestLoading ? (
-                              <CircularProgress color="white" size="20px" />
-                            ) : (
-                              "Reject Request"
-                            )}
-                          </button>
-                        </div>
+
+                    {username === currentUser.username && (
+                      <div className="profileEditor">
+                        <button
+                          className="followButton followButtonStyle"
+                          onClick={() =>
+                            getFollowersHandler(currentUser.username)
+                          }
+                        >
+                          {currentUserFollowers} followers
+                        </button>
+                        <button
+                          className="followButton followButtonStyle"
+                          onClick={() =>
+                            getFollowingsHandler(currentUser.username)
+                          }
+                        >
+                          {currentUserFollowing} following
+                        </button>
                       </div>
                     )}
-                  {username != currentUser.username && isFollower && (
-                    <button
-                      disabled={
-                        requestRemoveLoading ||
-                        sendRequestLoading ||
-                        stopFollowingRequestLoading
-                      }
-                      className="followButton"
-                      onClick={handleClickRemoveFollower}
-                    >
-                      {requestRemoveLoading ? (
-                        <CircularProgress color="white" size="20px" />
-                      ) : (
-                        "Remove Follower"
-                      )}
-                    </button>
-                  )}
-
-                  {username === currentUser.username && (
-                    <div className="profileEditor">
-                      <button
-                        className="followButton followButtonStyle"
-                        onClick={() =>
-                          getFollowersHandler(currentUser.username)
-                        }
-                      >
-                        {currentUserFollowers} followers
-                      </button>
-                      <button
-                        className="followButton followButtonStyle"
-                        onClick={() =>
-                          getFollowingsHandler(currentUser.username)
-                        }
-                      >
-                        {currentUserFollowing} following
-                      </button>
-                    </div>
-                  )}
-                  {username !== currentUser.username && (
-                    <div className="profileEditor">
-                      <button
-                        className="followButton"
-                        onClick={() => getFollowersHandler(username)}
-                      >
-                        {userFollowers} followers
-                      </button>
-                      <button
-                        className="followButton"
-                        onClick={() => getFollowingsHandler(username)}
-                      >
-                        {userFollowing} following
-                      </button>
-                    </div>
-                  )}
+                    {username !== currentUser.username && (
+                      <div className="profileEditor">
+                        <button
+                          className="followButton"
+                          onClick={() => getFollowersHandler(username)}
+                        >
+                          {userFollowers} followers
+                        </button>
+                        <button
+                          className="followButton"
+                          onClick={() => getFollowingsHandler(username)}
+                        >
+                          {userFollowing} following
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
-            {!isFetching && (
-              <div className="profileRightBottom">
-                <Feed username={username} profile={true}></Feed>
-              </div>
-            )}
-          </div>
+              )}
+              {!isFetching && (
+                <div className="profileRightBottom">
+                  <Feed username={username} profile={true}></Feed>
+                </div>
+              )}
+            </div>
+          )}
+          {isUserSearching && <SearchFriends username={usernameSearch} />}
           <Rightbar></Rightbar>
         </div>
       )}

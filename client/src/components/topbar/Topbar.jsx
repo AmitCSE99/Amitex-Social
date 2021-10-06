@@ -3,7 +3,7 @@ import { Search, Person, Chat, Notifications } from "@material-ui/icons";
 import { Link, useHistory } from "react-router-dom";
 import { useContext, useRef } from "react";
 import AuthContext from "../../context/AuthContext";
-export default function Topbar() {
+export default function Topbar(props) {
   const { user, logout, requests } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const searchRef = useRef();
@@ -13,6 +13,18 @@ export default function Topbar() {
     logout();
   };
   const nameSearchHandler = (e) => {
+    // e.preventDefault();
+    const searchInput = searchRef.current.value;
+    console.log(searchInput);
+    // history.push(`/findUsers/${searchInput}`);
+    if (searchInput.length === 0) props.stopSearch();
+    else {
+      props.setSearch();
+      props.setUserSearch(searchInput);
+    }
+  };
+
+  const nameSubmitHandler = (e) => {
     e.preventDefault();
     const searchInput = searchRef.current.value;
     history.push(`/findUsers/${searchInput}`);
@@ -30,7 +42,11 @@ export default function Topbar() {
         </Link>
       </div>
       <div className="topbarCenter">
-        <form className="searchbar" onSubmit={nameSearchHandler}>
+        <form
+          className="searchbar"
+          onChange={nameSearchHandler}
+          onSubmit={nameSubmitHandler}
+        >
           <Search className="searchIcon"></Search>
           <input
             placeholder="Search for any friends, post or video"

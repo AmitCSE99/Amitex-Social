@@ -8,10 +8,26 @@ import Topbar from "../../components/topbar/Topbar";
 import AuthContext from "../../context/AuthContext";
 import { CircularProgress } from "@material-ui/core";
 import "./followers.css";
+import SearchFriends from "../../components/searchFriends/SearchFriends";
 
 const Followers = () => {
   const { username } = useParams();
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+  const [isUserSearching, setIsUserSearching] = useState(false);
+  const [usernameSearch, setUsernameSearch] = useState(null);
+
+  const setSearch = () => {
+    setIsUserSearching(true);
+  };
+
+  const stopSearch = () => {
+    setIsUserSearching(false);
+  };
+
+  const setUserSearch = (name) => {
+    setUsernameSearch(name);
+  };
+
   const [followers, setFollowers] = useState(null);
   const { user } = useContext(AuthContext);
   const [isFetching, setIsFetching] = useState(false);
@@ -33,29 +49,38 @@ const Followers = () => {
   console.log(followers);
   return (
     <>
-      <Topbar></Topbar>
+      <Topbar
+        setSearch={setSearch}
+        stopSearch={stopSearch}
+        setUserSearch={setUserSearch}
+      ></Topbar>
       <div className="followers">
         <Sidebar></Sidebar>
-        <div className="followersSection">
-          {user.username === username && (
-            <p className="followersHeading">Your Followers</p>
-          )}
-          {user.username !== username && (
-            <p className="followersHeading">Followers</p>
-          )}
-          <div className="followersFeed">
-            <div
-              className={isFetching ? "followersListLoading" : "followersList"}
-            >
-              {isFetching && <CircularProgress />}
-              {!isFetching &&
-                followers &&
-                followers.map((f) => (
-                  <ShowFollowersFollowingContainer follower={f} key={f._id} />
-                ))}
+        {!isUserSearching && (
+          <div className="followersSection">
+            {user.username === username && (
+              <p className="followersHeading">Your Followers</p>
+            )}
+            {user.username !== username && (
+              <p className="followersHeading">Followers</p>
+            )}
+            <div className="followersFeed">
+              <div
+                className={
+                  isFetching ? "followersListLoading" : "followersList"
+                }
+              >
+                {isFetching && <CircularProgress />}
+                {!isFetching &&
+                  followers &&
+                  followers.map((f) => (
+                    <ShowFollowersFollowingContainer follower={f} key={f._id} />
+                  ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
+        {isUserSearching && <SearchFriends username={usernameSearch} />}
         <Rightbar></Rightbar>
       </div>
     </>
