@@ -139,8 +139,29 @@ router.get("/validateToken", async (req, res) => {
       }
       try {
         console.log(tokenUser._id);
-        const user = await User.findById(tokenUser._id);
-        res.status(200).json({ success: true, user });
+        const user = await User.findById(tokenUser._id)
+          .populate("requests")
+          .populate("notifications.user")
+          .populate("notifications.post");
+        let seenNotificationsCounter = 0;
+        let seenNotifications = [];
+        let notSeenNotificationsCounter = 0;
+        let notSeenNotifications = [];
+        user.notifications.forEach(async (notification) => {
+          if (notification.status === 1) {
+            seenNotificationsCounter += 1;
+            seenNotifications.push(notification);
+          } else {
+            notSeenNotificationsCounter += 1;
+            notSeenNotifications.push(notification);
+          }
+        });
+
+        res.status(200).json({
+          success: true,
+          user,
+          newNotifications: notSeenNotificationsCounter,
+        });
       } catch (err) {
         res
           .status(500)

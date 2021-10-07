@@ -91,6 +91,14 @@ router.put("/:id/request", async (req, res) => {
       console.log(user);
       if (!user.requests.includes(req.body.userId)) {
         await user.updateOne({ $push: { requests: req.body.userId } });
+        const updatedNotification = {
+          messageType: 1,
+          user: req.body.userId,
+          status: 0,
+          otherLikes: 0,
+          otherComments: 0,
+        };
+        await user.updateOne({ $push: { notifications: updatedNotification } });
         res
           .status(200)
           .json({ success: true, message: "Request send successfully" });
@@ -119,6 +127,14 @@ router.put("/:id/acceptRequest", async (req, res) => {
         await currentUser.updateOne({ $push: { followers: req.params.id } });
         await user.updateOne({ $push: { following: req.body.userId } });
         await currentUser.updateOne({ $pull: { requests: req.params.id } });
+        const updatedNotification = {
+          messageType: 0,
+          user: req.body.userId,
+          status: 0,
+          otherLikes: 0,
+          otherComments: 0,
+        };
+        await user.updateOne({ $push: { notifications: updatedNotification } });
         res
           .status(200)
           .json({ success: true, message: "Sucessfully accepted the request" });
@@ -267,6 +283,44 @@ router.get("/:id/getRequests", async (req, res) => {
       .json({ success: true, requests: currentUser.requests.reverse() });
   } catch (err) {
     res.status(500).json({ success: false, message: "Something went wrong!" });
+  }
+});
+
+router.get("/:id/fetchUserNotifications", async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const user = await User.findById(userId)
+      .populate("requests")
+      .populate("notifications.user")
+      .populate("notifications.post");
+    let seenNotificationsCounter = 0;
+    let seenNotifications = [];
+    let notSeenNotificationsCounter = 0;
+    let notSeenNotifications = [];
+    user.notifications.forEach(async (notification) => {
+      if (notification.status === 1) {
+        seenNotificationsCounter += 1;
+        seenNotifications.push(notification);
+      } else {
+        notSeenNotificationsCounter += 1;
+        notSeenNotifications.push(notification);
+        await User.findOneAndUpdate(
+          { _id: userId, "notifications._id": notification._id },
+          { $set: { "notifications.$.status": 1 } }
+        );
+      }
+    });
+
+    res.status(200).json({
+      success: true,
+      seenNotificationsCounter,
+      seenNotifications,
+      notSeenNotificationsCounter,
+      notSeenNotifications,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ sucess: false, message: "Something went wrong" });
   }
 });
 

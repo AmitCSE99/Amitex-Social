@@ -205,7 +205,20 @@ router.put("/:id/postComment", async (req, res) => {
   const postId = req.params.id;
   try {
     const post = await Post.findById(postId);
+    const ownerUser = await User.findById(post.user);
+    const otherComments = post.comments.length;
     await post.updateOne({ $push: { comments: commentObj } });
+    const updatedNotification = {
+      messageType: 3,
+      user: req.body.user,
+      post: postId,
+      otherComments,
+      otherLikes: 0,
+      status: 0,
+    };
+    await ownerUser.updateOne({
+      $push: { notifications: updatedNotification },
+    });
     res.status(200).json({ commentObj });
   } catch (err) {
     res.status(500).json({ message: err });

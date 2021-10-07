@@ -79,7 +79,6 @@ const UserSchema = new mongoose.Schema(
     notifications: {
       type: [
         {
-          _id: false,
           messageType: {
             type: Number,
             default: 0,
