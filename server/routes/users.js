@@ -314,9 +314,9 @@ router.get("/:id/fetchUserNotifications", async (req, res) => {
     res.status(200).json({
       success: true,
       seenNotificationsCounter,
-      seenNotifications,
+      seenNotifications: seenNotifications.reverse(),
       notSeenNotificationsCounter,
-      notSeenNotifications,
+      notSeenNotifications: notSeenNotifications.reverse(),
     });
   } catch (err) {
     console.log(err);

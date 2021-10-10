@@ -8,16 +8,16 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
 } from "react-router-dom";
-import { Fragment, useCallback, useContext, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import AuthContext from "./context/AuthContext";
 import Followers from "./pages/Followers/Followers";
 import Followings from "./pages/followings/followings";
 import FindUsers from "./pages/findUsers/FindUsers";
 import axios from "axios";
 import FriendRequests from "./pages/friendRequests/FriendRequests";
+import Notifications from "./pages/notifications/Notifications";
 
 function App() {
   // const { user } = useContext(AuthContext);
@@ -28,6 +28,7 @@ function App() {
   const [followers, setFollowers] = useState(null);
   const [requests, setRequests] = useState(null);
   const [error, setError] = useState(null);
+  const [newNotificationsCounter, setNewNotificationsCounter] = useState(0);
 
   const login = useCallback((email, password) => {
     const loginUser = async () => {
@@ -56,6 +57,7 @@ function App() {
         setFollowings(newResponse.data.user.following);
         setFollowers(newResponse.data.user.followers);
         setRequests(newResponse.data.user.requests);
+        setNewNotificationsCounter(newResponse.data.newNotifications);
         console.log(user);
         console.log(followers);
         localStorage.setItem("accessToken", response.data.accessToken);
@@ -87,6 +89,10 @@ function App() {
     setFollowings(newFollowingList);
   });
 
+  const ResetNotifications = useCallback((resetValue) => {
+    setNewNotificationsCounter(resetValue);
+  });
+
   useEffect(() => {
     const getAndValidateUser = async () => {
       setIsFetching(true);
@@ -99,12 +105,14 @@ function App() {
           },
         }
       );
+
       if (response.data.success) {
         console.log(response.data.user.followers);
         setUser(response.data.user);
         setFollowings(response.data.user.following);
         setRequests(response.data.user.requests);
         setFollowers(response.data.user.followers);
+        setNewNotificationsCounter(response.data.newNotifications);
         console.log(requests);
         console.log(followings);
         console.log(user);
@@ -140,6 +148,8 @@ function App() {
             requests: requests,
             followers: followers,
             followings: followings,
+            newNotifications: newNotificationsCounter,
+            setNewNotifications: ResetNotifications,
             login: login,
             logout: logout,
             Follow: Follow,
@@ -173,6 +183,9 @@ function App() {
               </Route>
               <Route path="/friendRequests">
                 {user === null ? <Login /> : <FriendRequests />}
+              </Route>
+              <Route path="/notifications">
+                {user === null ? <Login /> : <Notifications />}
               </Route>
             </Switch>
           </Router>

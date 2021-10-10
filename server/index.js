@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
+const cors=require('cors');
 const multer = require("multer");
 const path = require("path");
 const { v1: uuidv1 } = require("uuid");
@@ -42,6 +43,7 @@ app.use(
     limit: "200mb",
   })
 );
+app.use(cors());
 app.use(helmet());
 app.use(morgan("common"));
 // var name;

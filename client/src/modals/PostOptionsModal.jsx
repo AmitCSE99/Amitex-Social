@@ -3,8 +3,8 @@ import ReactDom from "react-dom";
 import AuthContext from "../context/AuthContext";
 import "./postOptionsModal.css";
 export default function PostOptionsModal({ open, onClose, post }) {
-  if (!open) return null;
   const { user } = useContext(AuthContext);
+  if(!open) return null;
 
   const editPostSubmitHandler = () => {
     console.log(user.username);

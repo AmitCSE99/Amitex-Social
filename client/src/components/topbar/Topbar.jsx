@@ -4,7 +4,7 @@ import { Link, useHistory } from "react-router-dom";
 import { useContext, useRef } from "react";
 import AuthContext from "../../context/AuthContext";
 export default function Topbar(props) {
-  const { user, logout, requests } = useContext(AuthContext);
+  const { user, logout, requests, newNotifications } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const searchRef = useRef();
   const history = useHistory();
@@ -32,6 +32,10 @@ export default function Topbar(props) {
 
   const goToFriendRequestsPageHandler = () => {
     history.push("/friendRequests");
+  };
+
+  const goToNotificationsPageHandler = () => {
+    history.push("/notifications");
   };
 
   return (
@@ -76,9 +80,12 @@ export default function Topbar(props) {
             <Chat />
             <span className="topbarIconBadge">1</span>
           </div>
-          <div className="topbarIconItem">
+          <div
+            className="topbarIconItem"
+            onClick={goToNotificationsPageHandler}
+          >
             <Notifications />
-            <span className="topbarIconBadge">1</span>
+            <span className="topbarIconBadge">{newNotifications}</span>
           </div>
         </div>
         <Link to={`/profile/${user.username}`}>

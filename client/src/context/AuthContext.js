@@ -8,6 +8,8 @@ const AuthContext = createContext({
   followers: [],
   followings: [],
   requests: [],
+  newNotifications: 0,
+  setNewNotifications: () => {},
   Follow: () => {},
   Unfollow: () => {},
   RemoveRequest: () => {},
