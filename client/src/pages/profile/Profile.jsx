@@ -93,7 +93,7 @@ export default function Profile() {
           setGotRequest(requests.includes(response.data.user._id));
 
           setIsFetching(false);
-          console.log(followed);
+          console.log(requests);
         } catch (err) {
           setIsFetching(false);
           console.log(err);

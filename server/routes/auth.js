@@ -140,7 +140,6 @@ router.get("/validateToken", async (req, res) => {
       try {
         console.log(tokenUser._id);
         const user = await User.findById(tokenUser._id)
-          .populate("requests")
           .populate("notifications.user")
           .populate("notifications.post");
         let seenNotificationsCounter = 0;
