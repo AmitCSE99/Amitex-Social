@@ -95,6 +95,10 @@ const UserSchema = new mongoose.Schema(
             type: Date,
             default: Date.now(),
           },
+          commentedUsersList: {
+            type: [String],
+            default: [],
+          },
           status: {
             type: Number,
             default: 0,

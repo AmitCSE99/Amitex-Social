@@ -135,9 +135,53 @@ router.put("/:id/like", async (req, res) => {
         otherLikes,
         otherComments,
       };
-      await postUser.updateOne({
-        $push: { notifications: updatedNotification },
-      });
+      const index = postUser.notifications.findIndex(
+        (notification) =>
+          notification.post.toString() === req.params.id.toString() &&
+          notification.messageType === 2
+      );
+      console.log("This is a Test User", index);
+      if (index === -1) {
+        await postUser.updateOne({
+          $push: { notifications: updatedNotification },
+        });
+      } else {
+        // await User.findOneAndUpdate(
+        //   {
+        //     _id: postUserId,
+        //     "notifications.post": req.params.id,
+        //     "notifications.messageType": 2,
+        //   },
+        //   {
+        //     $set: {
+        //       "notifications.$.status": 0,
+        //       "notifications.$.otherLikes": otherLikes,
+        //       "notifications.$.user": req.body.userId,
+        //       "notifications.$.creationTime": Date.now(),
+        //     },
+        //   }
+        // );
+        // await postUser.notifications.updateOne(
+        //   {
+        //     "notifications.post": req.params.id,
+        //   },
+        //   {
+        //     $set: {
+        //       "notifications.$.status": 0,
+        //       "notifications.$.otherLikes": otherLikes,
+        //       "notifications.$.user": req.body.userId,
+        //       "notifications.$.creationTime": Date.now(),
+        //     },
+        //   }
+        // );
+        postUser.notifications[index].status = 0;
+        postUser.notifications[index].creationTime = Date.now();
+        postUser.notifications[index].otherLikes = otherLikes;
+        postUser.notifications[index].otherComments = otherComments;
+        postUser.notifications[index].user = req.body.userId;
+        await postUser.save();
+      }
+
       res.status(200).json({ message: "The Post has been liked" });
     } else {
       await post.updateOne({ $pull: { likes: req.body.userId } });
@@ -206,21 +250,48 @@ router.put("/:id/postComment", async (req, res) => {
   try {
     const post = await Post.findById(postId);
     const ownerUser = await User.findById(post.user);
+    console.log("This is the owner", ownerUser);
     const otherComments = post.comments.length;
     await post.updateOne({ $push: { comments: commentObj } });
+    const index = ownerUser.notifications.findIndex(
+      (notification) =>
+        notification.post.toString() === postId.toString() &&
+        notification.messageType === 3
+    );
+    let commentedUser = [];
+    commentedUser.push(req.body.user);
+    console.log("This is a comment Index", index);
     const updatedNotification = {
       messageType: 3,
       user: req.body.user,
       post: postId,
+      commentedUsersList: [req.body.user],
       otherComments,
       otherLikes: 0,
       status: 0,
     };
-    await ownerUser.updateOne({
-      $push: { notifications: updatedNotification },
-    });
+    if (index === -1) {
+      await ownerUser.updateOne({
+        $push: { notifications: updatedNotification },
+      });
+    } else {
+      if (
+        !ownerUser.notifications[index].commentedUsersList.includes(
+          req.body.user
+        )
+      ) {
+        ownerUser.notifications[index].commentedUsersList.push(req.body.user);
+      }
+      ownerUser.notifications[index].status = 0;
+      ownerUser.notifications[index].creationTime = Date.now();
+      ownerUser.notifications[index].otherComments =
+        ownerUser.notifications[index].commentedUsersList.length;
+      ownerUser.notifications[index].user = req.body.user;
+      await ownerUser.save();
+    }
     res.status(200).json({ commentObj });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: err });
   }
 });

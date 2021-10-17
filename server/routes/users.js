@@ -314,9 +314,17 @@ router.get("/:id/fetchUserNotifications", async (req, res) => {
     res.status(200).json({
       success: true,
       seenNotificationsCounter,
-      seenNotifications: seenNotifications.reverse(),
+      seenNotifications: seenNotifications.sort(function (a, b) {
+        var c = a.creationTime;
+        var d = b.creationTime;
+        return d - c;
+      }),
       notSeenNotificationsCounter,
-      notSeenNotifications: notSeenNotifications.reverse(),
+      notSeenNotifications: notSeenNotifications.sort(function (a, b) {
+        var c = a.creationTime;
+        var d = b.creationTime;
+        return d - c;
+      }),
     });
   } catch (err) {
     console.log(err);
