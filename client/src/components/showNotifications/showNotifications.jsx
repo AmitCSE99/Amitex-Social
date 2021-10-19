@@ -1,11 +1,20 @@
 import React from "react";
 import classes from "./showNotifications.module.css";
 import { format } from "timeago.js";
+import { useHistory } from "react-router-dom";
 export default function ShowNotifications(props) {
+  const history = useHistory();
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
+  const goToPost = () => {
+    if (props.data.messageType === 2) {
+      history.push(`/post/${props.data.post._id}`);
+    } else if (props.data.messageType === 3) {
+      history.push(`/post/${props.data.post._id}`);
+    }
+  };
   return (
     <div className={classes.container}>
-      <div className={classes.outerContainer}>
+      <div className={classes.outerContainer} onClick={goToPost}>
         <div className={classes.imageContainer}>
           <img src={PF + "person/noAvatar.png"} alt="" />
         </div>

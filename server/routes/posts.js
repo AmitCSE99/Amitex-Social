@@ -193,12 +193,14 @@ router.put("/:id/like", async (req, res) => {
   }
 });
 
-router.get("/:id", authenticateToken, async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
-    const post = await Post.findById(req.params.id);
-    res.status(200).json({ post });
+    const post = await Post.findById(req.params.id)
+      .populate("user")
+      .populate("comments.user");
+    res.status(200).json({ success: true, post });
   } catch (err) {
-    res.status(500).json({ message: err });
+    res.status(500).json({ success: false, message: err });
   }
 });
 

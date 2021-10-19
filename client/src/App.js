@@ -18,6 +18,7 @@ import FindUsers from "./pages/findUsers/FindUsers";
 import axios from "axios";
 import FriendRequests from "./pages/friendRequests/FriendRequests";
 import Notifications from "./pages/notifications/Notifications";
+import GetPost from "./pages/getPost/GetPost";
 
 function App() {
   // const { user } = useContext(AuthContext);
@@ -180,6 +181,9 @@ function App() {
               </Route>
               <Route path="/findUsers/:name">
                 {user === null ? <Login /> : <FindUsers />}
+              </Route>
+              <Route path="/post/:id">
+                {user === null ? <Login /> : <GetPost />}
               </Route>
               <Route path="/friendRequests">
                 {user === null ? <Login /> : <FriendRequests />}
