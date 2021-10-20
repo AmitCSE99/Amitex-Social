@@ -19,6 +19,7 @@ import axios from "axios";
 import FriendRequests from "./pages/friendRequests/FriendRequests";
 import Notifications from "./pages/notifications/Notifications";
 import GetPost from "./pages/getPost/GetPost";
+import EditPost from "./pages/editPost/EditPost";
 
 function App() {
   // const { user } = useContext(AuthContext);
@@ -184,6 +185,9 @@ function App() {
               </Route>
               <Route path="/post/:id">
                 {user === null ? <Login /> : <GetPost />}
+              </Route>
+              <Route path="/editPost/:id">
+                {user === null ? <Login /> : <EditPost />}
               </Route>
               <Route path="/friendRequests">
                 {user === null ? <Login /> : <FriendRequests />}

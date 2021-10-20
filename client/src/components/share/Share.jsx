@@ -10,10 +10,15 @@ import { CircularProgress } from "@material-ui/core";
 import { useContext, useRef, useState } from "react";
 import AuthContext from "../../context/AuthContext";
 import axios from "axios";
-export default function Share() {
+import { useHistory } from "react-router-dom";
+
+export default function Share(props) {
+  const history = useHistory();
   const { user } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-  const desc = useRef();
+  const [description, setDescription] = useState(
+    props.post ? props.post.desc : ""
+  );
   const [isFetching, setIsFetching] = useState(false);
   const [image, setImage] = useState(null);
 
@@ -41,7 +46,7 @@ export default function Share() {
     setIsFetching(true);
     const newPost = {
       user: user._id,
-      desc: desc.current.value,
+      desc: description,
       img: image,
     };
     // if (file) {
@@ -68,6 +73,27 @@ export default function Share() {
     }
   };
 
+  const editPostSubmitHandler = async (e) => {
+    e.preventDefault();
+    const editedPost = {
+      postId: props.post._id,
+      desc: description,
+    };
+    setIsFetching(true);
+    try {
+      await axios.post("/posts/editPost", editedPost);
+      setIsFetching(false);
+      props.editedPostHandler();
+      history.goBack();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const descriptionChangedHandler = (e) => {
+    setDescription(e.target.value);
+  };
+  console.log(description);
   return (
     <div className="share">
       <div className="shareWrapper">
@@ -84,7 +110,8 @@ export default function Share() {
           <input
             placeholder={"What's in your mind " + user.name.split(" ")[0]}
             className="shareInput"
-            ref={desc}
+            onChange={descriptionChangedHandler}
+            value={description}
           />
         </div>
         <hr className="shareHr" />
@@ -97,18 +124,32 @@ export default function Share() {
             />
           </div>
         )}
-        <form className="shareBottom" onSubmit={submitHandler}>
+        {props.isEdit && (
+          <div className="shareImageContainer">
+            <img src={props.post.img} alt="" className="shareImg" />
+            {/* <Cancel
+              className="shareCancelImage"
+              onClick={() => setImage(null)}
+            /> */}
+          </div>
+        )}
+        <form
+          className="shareBottom"
+          onSubmit={props.isEdit ? editPostSubmitHandler : submitHandler}
+        >
           <div className="shareOptions">
             <label htmlFor="file" className="shareOption">
               <PermMedia htmlColor="purple" className="shareIcon" />
               <span className="shareOptionText">Photo or Video</span>
-              <input
-                style={{ display: "none" }}
-                type="file"
-                id="file"
-                accept=".png,.jpeg,.jpg"
-                onChange={onChangeHandler}
-              ></input>
+              {!props.isEdit && (
+                <input
+                  style={{ display: "none" }}
+                  type="file"
+                  id="file"
+                  accept=".png,.jpeg,.jpg"
+                  onChange={onChangeHandler}
+                ></input>
+              )}
             </label>
             <div className="shareOption">
               <Label htmlColor="blue" className="shareIcon" />
@@ -126,6 +167,8 @@ export default function Share() {
           <button type="submit" className="shareButton">
             {isFetching ? (
               <CircularProgress color="white" size="16px" />
+            ) : props.isEdit ? (
+              "Edit"
             ) : (
               "Share"
             )}

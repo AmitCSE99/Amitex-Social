@@ -14,6 +14,9 @@ export default function Post({ post }) {
   const [like, setLike] = useState(post.likes.length);
   const [isLiked, setIsLiked] = useState(false);
   const [commentCounter, setCommentCounter] = useState(post.comments.length);
+  const [postDescription, setPostDescription] = useState(
+    post.desc ? post.desc : ""
+  );
   const [commentList, setCommentList] = useState(
     post.comments.sort((p1, p2) => {
       return new Date(p2.creationTime) - new Date(p1.creationTime);
@@ -119,7 +122,7 @@ export default function Post({ post }) {
           </div>
         </div>
         <div className="postCenter">
-          <span className="postText">{post?.desc}</span>
+          <span className="postText">{postDescription}</span>
           <img className="postImage" src={post.img} alt="" />
         </div>
         <div className="postBottom">
