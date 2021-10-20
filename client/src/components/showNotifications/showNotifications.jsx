@@ -10,6 +10,10 @@ export default function ShowNotifications(props) {
       history.push(`/post/${props.data.post._id}`);
     } else if (props.data.messageType === 3) {
       history.push(`/post/${props.data.post._id}`);
+    } else if (props.data.messageType === 1) {
+      history.push("/friendRequests");
+    } else {
+      history.push(`/profile/${props.data.user.username}`);
     }
   };
   return (

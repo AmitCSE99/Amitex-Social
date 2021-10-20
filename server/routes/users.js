@@ -95,10 +95,25 @@ router.put("/:id/request", async (req, res) => {
           messageType: 1,
           user: req.body.userId,
           status: 0,
+          creationTime: Date.now(),
           otherLikes: 0,
           otherComments: 0,
         };
-        await user.updateOne({ $push: { notifications: updatedNotification } });
+        const index = user.notifications.findIndex(
+          (notification) =>
+            notification.user.toString() === req.body.userId.toString() &&
+            notification.messageType === 1
+        );
+        console.log(index);
+        if (index === -1) {
+          await user.updateOne({
+            $push: { notifications: updatedNotification },
+          });
+        } else {
+          user.notifications[index].status = 0;
+          user.notifications[index].creationTime = Date.now();
+          await user.save();
+        }
         res
           .status(200)
           .json({ success: true, message: "Request send successfully" });
@@ -131,10 +146,25 @@ router.put("/:id/acceptRequest", async (req, res) => {
           messageType: 0,
           user: req.body.userId,
           status: 0,
+          creationTime: Date.now(),
           otherLikes: 0,
           otherComments: 0,
         };
-        await user.updateOne({ $push: { notifications: updatedNotification } });
+        const index = user.notifications.findIndex(
+          (notification) =>
+            notification.user.toString() === req.body.userId.toString() &&
+            notification.messageType === 0
+        );
+        console.log("The Index is ", index);
+        if (index === -1) {
+          await user.updateOne({
+            $push: { notifications: updatedNotification },
+          });
+        } else {
+          user.notifications[index].status = 0;
+          user.notifications[index].creationTime = Date.now();
+          await user.save();
+        }
         res
           .status(200)
           .json({ success: true, message: "Sucessfully accepted the request" });

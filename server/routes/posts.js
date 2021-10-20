@@ -132,6 +132,7 @@ router.put("/:id/like", async (req, res) => {
         messageType: 2,
         user: req.body.userId,
         post: post._id,
+        creationTime: Date.now(),
         otherLikes,
         otherComments,
       };
@@ -268,6 +269,7 @@ router.put("/:id/postComment", async (req, res) => {
       user: req.body.user,
       post: postId,
       commentedUsersList: [req.body.user],
+      creationTime: Date.now(),
       otherComments,
       otherLikes: 0,
       status: 0,

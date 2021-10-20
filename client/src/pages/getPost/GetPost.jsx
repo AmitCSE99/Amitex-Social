@@ -59,14 +59,17 @@ export default function GetPost() {
       ></Topbar>
       <div className={classes.postContainer}>
         <Sidebar></Sidebar>
-        <div className={classes.post}>
-          {isFetching && (
-            <div className={classes.circularProgress}>
-              <CircularProgress />
-            </div>
-          )}
-          {!isFetching && post && <Post post={post}></Post>}
-        </div>
+        {!isUserSearching && (
+          <div className={classes.post}>
+            {isFetching && (
+              <div className={classes.circularProgress}>
+                <CircularProgress />
+              </div>
+            )}
+            {!isFetching && post && <Post post={post}></Post>}
+          </div>
+        )}
+        {isUserSearching && <SearchFriends username={usernameSearch} />}
         <Rightbar></Rightbar>
       </div>
     </>
