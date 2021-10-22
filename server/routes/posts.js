@@ -190,11 +190,21 @@ router.put("/:id/like", async (req, res) => {
   }
 });
 
+router.get("/:id/fetchLikes", async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id).populate("likes");
+    res.status(200).json({ success: true, likes: post.likes.reverse() });
+  } catch (err) {
+    res.status(500).json({ success: false, message: "Something went wrong" });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const post = await Post.findById(req.params.id)
       .populate("user")
-      .populate("comments.user");
+      .populate("comments.user")
+      .populate("likes");
     res.status(200).json({ success: true, post });
   } catch (err) {
     res.status(500).json({ success: false, message: err });
