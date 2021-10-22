@@ -264,6 +264,7 @@ router.put("/:id/postComment", async (req, res) => {
     await post.updateOne({ $push: { comments: commentObj } });
     const index = ownerUser.notifications.findIndex(
       (notification) =>
+        notification.post &&
         notification.post.toString() === postId.toString() &&
         notification.messageType === 3
     );
@@ -295,7 +296,7 @@ router.put("/:id/postComment", async (req, res) => {
       ownerUser.notifications[index].status = 0;
       ownerUser.notifications[index].creationTime = Date.now();
       ownerUser.notifications[index].otherComments =
-        ownerUser.notifications[index].commentedUsersList.length;
+        ownerUser.notifications[index].commentedUsersList.length - 1;
       ownerUser.notifications[index].user = req.body.user;
       await ownerUser.save();
     }
