@@ -9,6 +9,17 @@ export default function PostOptionsModal({ open, onClose, post }) {
   const history = useHistory();
   const { user } = useContext(AuthContext);
   const [isFetching, setIsFetching] = useState(false);
+  const {
+    user: currentUser,
+    requests,
+    followings,
+    followers,
+    Follow,
+    Unfollow,
+    logout,
+    RemoveRequest,
+    StopFollowing,
+  } = useContext(AuthContext);
   if (!open) return null;
 
   const editPostSubmitHandler = () => {
@@ -19,6 +30,27 @@ export default function PostOptionsModal({ open, onClose, post }) {
     // };
 
     history.push(`/editPost/${post._id}`);
+  };
+
+  const unfollowUserHandler = async () => {
+    setIsFetching(true);
+    try {
+      await axios.put("/user/" + currentUser._id + "/unfollow", {
+        userId: post.user._id,
+      });
+      const newFollowers = followers.filter((uid) => uid !== user._id);
+      console.log(newFollowers);
+      Unfollow(newFollowers);
+      let newUserFollowings = followings.length - 1;
+      // setUserFollowing(newUserFollowings);
+      // setIsFollower(false);
+      setIsFetching(false);
+      window.location.reload();
+      alert("You have successfully unfollowed the user");
+    } catch (err) {
+      console.log(err);
+      setIsFetching(false);
+    }
   };
 
   const deletePostHandler = async () => {
@@ -34,6 +66,7 @@ export default function PostOptionsModal({ open, onClose, post }) {
       );
       setIsFetching(false);
       window.location.reload();
+      alert("The Post has been deleted successfully");
     } catch (err) {
       console.log(err);
       setIsFetching(false);
@@ -85,7 +118,13 @@ export default function PostOptionsModal({ open, onClose, post }) {
                 <p>
                   Don't wanna follow this user? Just click the button below :)
                 </p>
-                <button>Unfollow User</button>
+                <button onClick={unfollowUserHandler}>
+                  {isFetching ? (
+                    <CircularProgress color="white" size="20px" />
+                  ) : (
+                    "Delete Post"
+                  )}
+                </button>
               </div>
             </div>
           )}
