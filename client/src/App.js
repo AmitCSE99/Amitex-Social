@@ -3,6 +3,7 @@ import Login from "./pages/login/Login";
 import Profile from "./pages/profile/Profile";
 import Register from "./pages/register/Register";
 import { CircularProgress } from "@material-ui/core";
+import { io } from "socket.io-client";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -96,6 +97,7 @@ function App() {
   });
 
   useEffect(() => {
+    const socket = io("http://localhost:8080");
     const getAndValidateUser = async () => {
       setIsFetching(true);
       const accessToken = localStorage.getItem("accessToken");
