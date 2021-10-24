@@ -32,6 +32,8 @@ function App() {
   const [requests, setRequests] = useState(null);
   const [error, setError] = useState(null);
   const [newNotificationsCounter, setNewNotificationsCounter] = useState(0);
+  const [socketNotifications, setSocketNotifications] = useState(0);
+  const [socket, setSocket] = useState(null);
 
   const login = useCallback((email, password) => {
     const loginUser = async () => {
@@ -94,10 +96,15 @@ function App() {
 
   const ResetNotifications = useCallback((resetValue) => {
     setNewNotificationsCounter(resetValue);
+    setSocketNotifications(resetValue);
+  });
+
+  const SettingSocketNotifications = useCallback((value) => {
+    setSocketNotifications(value);
   });
 
   useEffect(() => {
-    const socket = io("http://localhost:8080");
+    setSocket(io("http://localhost:8080"));
     const getAndValidateUser = async () => {
       setIsFetching(true);
       const accessToken = localStorage.getItem("accessToken");
@@ -129,6 +136,10 @@ function App() {
     getAndValidateUser();
   }, []);
 
+  useEffect(() => {
+    user && socket?.emit("newUser", user);
+  }, [socket, user]);
+
   return (
     <Fragment>
       {isFetching && (
@@ -153,6 +164,9 @@ function App() {
             followers: followers,
             followings: followings,
             newNotifications: newNotificationsCounter,
+            socket: socket,
+            socketNotifications: socketNotifications,
+            setSocketNotifications: SettingSocketNotifications,
             setNewNotifications: ResetNotifications,
             login: login,
             logout: logout,

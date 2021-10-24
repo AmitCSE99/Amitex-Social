@@ -29,7 +29,7 @@ export default function Post({ post }) {
   const commentRef = useRef();
 
   const [viewComments, setViewComments] = useState(false);
-  const { user: currentUser } = useContext(AuthContext);
+  const { user: currentUser, socket } = useContext(AuthContext);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
 
   useEffect(() => {
@@ -54,6 +54,7 @@ export default function Post({ post }) {
 
   const likeHandler = async () => {
     try {
+      const uniqueId = currentUser._id + post._id;
       await axios.put("/posts/" + post._id + "/like", {
         userId: currentUser._id,
         postUserId: post.user._id,
@@ -61,6 +62,12 @@ export default function Post({ post }) {
     } catch (err) {}
     setLike(isLiked ? like - 1 : like + 1);
     setIsLiked(!isLiked);
+    !isLiked &&
+      socket.emit("sendNotification", {
+        senderId: currentUser._id + post._id,
+        receiverId: post.user._id,
+        type: 1,
+      });
   };
 
   const showCommentsHandler = () => {

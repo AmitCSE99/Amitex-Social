@@ -134,6 +134,7 @@ router.put("/:id/like", async (req, res) => {
       };
       const index = postUser.notifications.findIndex(
         (notification) =>
+          notification.post &&
           notification.post.toString() === req.params.id.toString() &&
           notification.messageType === 2
       );
@@ -143,34 +144,6 @@ router.put("/:id/like", async (req, res) => {
           $push: { notifications: updatedNotification },
         });
       } else {
-        // await User.findOneAndUpdate(
-        //   {
-        //     _id: postUserId,
-        //     "notifications.post": req.params.id,
-        //     "notifications.messageType": 2,
-        //   },
-        //   {
-        //     $set: {
-        //       "notifications.$.status": 0,
-        //       "notifications.$.otherLikes": otherLikes,
-        //       "notifications.$.user": req.body.userId,
-        //       "notifications.$.creationTime": Date.now(),
-        //     },
-        //   }
-        // );
-        // await postUser.notifications.updateOne(
-        //   {
-        //     "notifications.post": req.params.id,
-        //   },
-        //   {
-        //     $set: {
-        //       "notifications.$.status": 0,
-        //       "notifications.$.otherLikes": otherLikes,
-        //       "notifications.$.user": req.body.userId,
-        //       "notifications.$.creationTime": Date.now(),
-        //     },
-        //   }
-        // );
         postUser.notifications[index].status = 0;
         postUser.notifications[index].creationTime = Date.now();
         postUser.notifications[index].otherLikes = otherLikes;

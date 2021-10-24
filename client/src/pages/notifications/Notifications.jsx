@@ -12,7 +12,8 @@ import classes from "./notifications.module.css";
 import ShowNotifications from "../../components/showNotifications/showNotifications";
 
 export default function Notifications() {
-  const { user, requests, setNewNotifications } = useContext(AuthContext);
+  const { user, requests, setNewNotifications, socket } =
+    useContext(AuthContext);
   const [seenNotificationsList, setSeenNotificationsList] = useState([]);
   const [isFetching, setIsFetching] = useState(false);
   const [notSeenNotifications, setNotSeenNotifications] = useState([]);
@@ -40,6 +41,7 @@ export default function Notifications() {
         );
         setSeenNotificationsList(response.data.seenNotifications);
         setNotSeenNotifications(response.data.notSeenNotifications);
+        socket.emit("clearNotifications", user._id);
         setNewNotifications(0);
         console.log(response.data);
         setIsFetching(false);

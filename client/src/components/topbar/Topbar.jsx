@@ -1,10 +1,19 @@
 import "./topbar.css";
 import { Search, Person, Chat, Notifications } from "@material-ui/icons";
 import { Link, useHistory } from "react-router-dom";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "../../context/AuthContext";
 export default function Topbar(props) {
-  const { user, logout, requests, newNotifications } = useContext(AuthContext);
+  const {
+    user,
+    logout,
+    requests,
+    newNotifications,
+    socketNotifications,
+    setSocketNotifications,
+    socket,
+  } = useContext(AuthContext);
+  // const [updatesNotifications, setUpdatesNotifications] = useState(0);
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
   const searchRef = useRef();
   const history = useHistory();
@@ -12,6 +21,18 @@ export default function Topbar(props) {
     history.replace("/");
     logout();
   };
+
+  useEffect(() => {
+    const updateNotifications = () => {
+      socket.on("getNotification", (data) => {
+        // let uNotifications = socketNotifications + 1;
+        // console.log(uNotifications);
+        setSocketNotifications(data.newNotifications);
+      });
+    };
+    updateNotifications();
+  }, []);
+
   const nameSearchHandler = (e) => {
     // e.preventDefault();
     const searchInput = searchRef.current.value;
@@ -85,7 +106,12 @@ export default function Topbar(props) {
             onClick={goToNotificationsPageHandler}
           >
             <Notifications />
-            <span className="topbarIconBadge">{newNotifications}</span>
+            {socketNotifications === 0 && (
+              <span className="topbarIconBadge">{newNotifications}</span>
+            )}
+            {socketNotifications !== 0 && (
+              <span className="topbarIconBadge">{socketNotifications}</span>
+            )}
           </div>
         </div>
         <Link to={`/profile/${user.username}`}>
