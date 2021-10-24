@@ -97,7 +97,7 @@ function App() {
   });
 
   useEffect(() => {
-    const socket = io("http://localhost:8080");
+    // const socket = io("http://localhost:8080");
     const getAndValidateUser = async () => {
       setIsFetching(true);
       const accessToken = localStorage.getItem("accessToken");
