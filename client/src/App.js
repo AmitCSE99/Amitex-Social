@@ -70,12 +70,12 @@ function App() {
       }
     };
     loginUser();
-  }, []);
+  });
 
   const logout = useCallback(() => {
     localStorage.removeItem("accessToken");
     setUser(null);
-  }, []);
+  });
 
   const Follow = useCallback((userId, newRequestList) => {
     setFollowers(userId);
