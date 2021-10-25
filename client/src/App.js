@@ -104,7 +104,7 @@ function App() {
   });
 
   useEffect(() => {
-    setSocket(io("http://localhost:8080"));
+    setSocket(io("https://amitex-social-socket.herokuapp.com/"));
     const getAndValidateUser = async () => {
       setIsFetching(true);
       const accessToken = localStorage.getItem("accessToken");

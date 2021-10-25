@@ -6,7 +6,8 @@ const morgan = require("morgan");
 const userRoutes = require("./routes/users");
 const authRoutes = require("./routes/auth");
 const postRoutes = require("./routes/posts");
-const cors=require('cors');
+const cors = require("cors");
+const PORT = process.env.PORT || 5000;
 const multer = require("multer");
 const path = require("path");
 const { v1: uuidv1 } = require("uuid");
@@ -72,6 +73,6 @@ app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
 
-app.listen(5000, () => {
-  console.log("server is running");
+app.listen(PORT, () => {
+  console.log(`server is running ${PORT}`);
 });

@@ -1,5 +1,7 @@
 const { Server } = require("socket.io");
 
+const PORT = process.env.PORT || 8080;
+
 const io = new Server({
   cors: {
     origin: "http://localhost:3000",
@@ -63,4 +65,4 @@ io.on("connection", (socket) => {
   });
 });
 
-io.listen(8080);
+io.listen(PORT);
