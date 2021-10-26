@@ -24,14 +24,15 @@ export default function Topbar(props) {
 
   useEffect(() => {
     const updateNotifications = () => {
-      socket.on("getNotification", (data) => {
-        // let uNotifications = socketNotifications + 1;
-        // console.log(uNotifications);
-        setSocketNotifications(data.newNotifications);
-      });
+      socket &&
+        socket.on("getNotification", (data) => {
+          // let uNotifications = socketNotifications + 1;
+          // console.log(uNotifications);
+          setSocketNotifications(data.newNotifications);
+        });
     };
     updateNotifications();
-  }, []);
+  }, [socket]);
 
   const nameSearchHandler = (e) => {
     // e.preventDefault();
@@ -110,7 +111,9 @@ export default function Topbar(props) {
               <span className="topbarIconBadge">{newNotifications}</span>
             )}
             {socketNotifications !== 0 && (
-              <span className="topbarIconBadge">{socketNotifications}</span>
+              <span className="topbarIconBadge">
+                {socketNotifications + newNotifications}
+              </span>
             )}
           </div>
         </div>

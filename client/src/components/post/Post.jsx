@@ -67,6 +67,7 @@ export default function Post({ post }) {
     setLike(isLiked ? like - 1 : like + 1);
     setIsLiked(!isLiked);
     !isLiked &&
+      currentUser._id !== post.user._id &&
       socket.emit("sendNotification", {
         senderId: currentUser._id + post._id,
         receiverId: post.user._id,

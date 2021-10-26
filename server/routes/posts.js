@@ -132,24 +132,26 @@ router.put("/:id/like", async (req, res) => {
         otherLikes,
         otherComments,
       };
-      const index = postUser.notifications.findIndex(
-        (notification) =>
-          notification.post &&
-          notification.post.toString() === req.params.id.toString() &&
-          notification.messageType === 2
-      );
-      console.log("This is a Test User", index);
-      if (index === -1) {
-        await postUser.updateOne({
-          $push: { notifications: updatedNotification },
-        });
-      } else {
-        postUser.notifications[index].status = 0;
-        postUser.notifications[index].creationTime = Date.now();
-        postUser.notifications[index].otherLikes = otherLikes;
-        postUser.notifications[index].otherComments = otherComments;
-        postUser.notifications[index].user = req.body.userId;
-        await postUser.save();
+      if (post.user.toString() !== req.body.userId) {
+        const index = postUser.notifications.findIndex(
+          (notification) =>
+            notification.post &&
+            notification.post.toString() === req.params.id.toString() &&
+            notification.messageType === 2
+        );
+        console.log("This is a Test User", index);
+        if (index === -1) {
+          await postUser.updateOne({
+            $push: { notifications: updatedNotification },
+          });
+        } else {
+          postUser.notifications[index].status = 0;
+          postUser.notifications[index].creationTime = Date.now();
+          postUser.notifications[index].otherLikes = otherLikes;
+          postUser.notifications[index].otherComments = otherComments;
+          postUser.notifications[index].user = req.body.userId;
+          await postUser.save();
+        }
       }
 
       res.status(200).json({ message: "The Post has been liked" });

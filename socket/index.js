@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 8080;
 
 const io = new Server({
   cors: {
-    origin: ["http://localhost:3000", "https://amitex-social.netlify.app/"],
+    origin: ["http://localhost:3000", "https://amitex-social.netlify.app"],
   },
 });
 
@@ -45,7 +45,7 @@ io.on("connection", (socket) => {
   socket.on("sendNotification", ({ senderId, receiverId, type }) => {
     const receiver = getUser(receiverId);
     console.log(senderId);
-    if (!receiver.likedBy.includes(senderId)) {
+    if (receiver && !receiver.likedBy.includes(senderId)) {
       receiver.notifications += 1;
       receiver.likedBy.push(senderId);
       const newNotifications = receiver.notifications;
