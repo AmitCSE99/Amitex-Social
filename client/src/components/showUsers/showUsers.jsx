@@ -21,9 +21,14 @@ export default function ShowUsers(props) {
   const acceptUserRequestHandler = async () => {
     setAcceptRequestLoading(true);
     try {
-      await axios.put("/user/" + props.id + "/acceptRequest", {
-        userId: user._id,
-      });
+      await axios.put(
+        `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/` +
+          props.id +
+          "/acceptRequest",
+        {
+          userId: user._id,
+        }
+      );
       const newFollowersList = [...followers, props.id];
       const newRequestList = requests.filter(
         (uid) => uid.toString() !== props.id.toString()
@@ -40,9 +45,14 @@ export default function ShowUsers(props) {
   const rejectUserRequestHandler = async () => {
     setRejectRequestLoading(true);
     try {
-      await axios.put("/user/" + props.id + "/rejectRequest", {
-        userId: user._id,
-      });
+      await axios.put(
+        `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/` +
+          props.id +
+          "/rejectRequest",
+        {
+          userId: user._id,
+        }
+      );
       const newRequestList = requests.filter(
         (uid) => uid.toString() !== props.id.toString()
       );

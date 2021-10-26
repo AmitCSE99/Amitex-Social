@@ -37,7 +37,9 @@ export default function GetPost() {
     const fetchUser = async () => {
       setIsFetching(true);
       try {
-        const response = await axios.get(`/posts/${id}`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/posts/${id}`
+        );
         console.log(response.data.post);
         setPost(response.data.post);
         console.log(post);

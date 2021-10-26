@@ -35,7 +35,9 @@ const Followings = () => {
     const fetchFollowings = async () => {
       try {
         setIsFetching(true);
-        const response = await axios.get(`/user/followings/${username}`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/followings/${username}`
+        );
         setFollowings(response.data.followings);
         setIsFetching(false);
       } catch (err) {

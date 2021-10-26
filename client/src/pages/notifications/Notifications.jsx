@@ -37,7 +37,7 @@ export default function Notifications() {
       try {
         setIsFetching(true);
         const response = await axios.get(
-          `/user/${user._id}/fetchUserNotifications`
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/${user._id}/fetchUserNotifications`
         );
         setSeenNotificationsList(response.data.seenNotifications);
         setNotSeenNotifications(response.data.notSeenNotifications);

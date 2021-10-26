@@ -35,9 +35,14 @@ export default function PostOptionsModal({ open, onClose, post }) {
   const unfollowUserHandler = async () => {
     setIsFetching(true);
     try {
-      await axios.put("/user/" + currentUser._id + "/unfollow", {
-        userId: post.user._id,
-      });
+      await axios.put(
+        `${process.env.AMITEX_SOCIAL_BACKEND}/user/` +
+          currentUser._id +
+          "/unfollow",
+        {
+          userId: post.user._id,
+        }
+      );
       const newFollowers = followers.filter((uid) => uid !== user._id);
       console.log(newFollowers);
       Unfollow(newFollowers);
@@ -55,14 +60,10 @@ export default function PostOptionsModal({ open, onClose, post }) {
 
   const deletePostHandler = async () => {
     console.log(post.public_url);
-    const data = {
-      postId: post._id,
-      public_url: post.public_url,
-    };
     setIsFetching(true);
     try {
       const response = await axios.delete(
-        `/posts/deletePost/${post._id}/${post.public_url}`
+        `${process.env.AMITEX_SOCIAL_BACKEND}/posts/deletePost/${post._id}/${post.public_url}`
       );
       setIsFetching(false);
       window.location.reload();

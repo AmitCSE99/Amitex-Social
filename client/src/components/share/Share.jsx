@@ -65,7 +65,10 @@ export default function Share(props) {
     //   }
     // }
     try {
-      await axios.post("/posts", newPost);
+      await axios.post(
+        `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/posts`,
+        newPost
+      );
       setIsFetching(false);
       window.location.reload();
     } catch (err) {
@@ -81,7 +84,10 @@ export default function Share(props) {
     };
     setIsFetching(true);
     try {
-      await axios.post("/posts/editPost", editedPost);
+      await axios.post(
+        `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/posts/editPost`,
+        editedPost
+      );
       setIsFetching(false);
       props.editedPostHandler();
       history.goBack();

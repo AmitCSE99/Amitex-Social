@@ -26,7 +26,9 @@ export default function Sidebar() {
   useEffect(() => {
     const fetchFollowers = async () => {
       if (followers) {
-        const response = await axios.get(`/user/${currentUser._id}`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/${currentUser._id}`
+        );
         setUserFollowers(response.data.followers);
       }
     };

@@ -34,7 +34,9 @@ export default function FriendRequests() {
     const fetchRequests = async () => {
       try {
         setIsFetching(true);
-        const response = await axios.get(`/user/${user._id}/getRequests`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/${user._id}/getRequests`
+        );
         setRequestsList(response.data.requests);
         console.log(response.data.requests);
         setIsFetching(false);

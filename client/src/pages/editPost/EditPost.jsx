@@ -45,7 +45,9 @@ export default function EditPost() {
     const fetchPost = async () => {
       setIsFetching(true);
       try {
-        const response = await axios.get(`/posts/${id}`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/posts/${id}`
+        );
         setPost(response.data.post);
         console.log(response.data.post);
         setIsFetching(false);

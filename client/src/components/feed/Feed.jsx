@@ -13,18 +13,27 @@ export default function Feed({ profile, username }) {
   useEffect(() => {
     const fetchPosts = async () => {
       const response = username
-        ? await axios.get(`/posts/profile/${username}`, {
-            params: {
-              token: localStorage.getItem("accessToken"),
-            },
-          })
-        : await axios.get("/posts/timeline/" + user._id);
+        ? await axios.get(
+            `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/posts/profile/${username}`,
+            {
+              params: {
+                token: localStorage.getItem("accessToken"),
+              },
+            }
+          )
+        : await axios.get(
+            `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/posts/timeline/` +
+              user._id
+          );
 
       if (!response.data.success) {
         console.log("access token refresh hobe");
-        const newResponse = await axios.post("/auth/token", {
-          refreshToken: localStorage.getItem("refreshToken"),
-        });
+        const newResponse = await axios.post(
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/auth/token`,
+          {
+            refreshToken: localStorage.getItem("refreshToken"),
+          }
+        );
         localStorage.setItem("accessToken", newResponse.data.accessToken);
         localStorage.setItem("userdata", JSON.stringify(newResponse.data.user));
         window.location.reload();

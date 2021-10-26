@@ -31,7 +31,10 @@ export default function Register() {
         password: password.current.value,
       };
       try {
-        const response = await axios.post("/auth/register", user);
+        const response = await axios.post(
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/auth/register`,
+          user
+        );
         console.log(response);
         if (response.data.message) {
           if (response.data.message === "username is already taken") {

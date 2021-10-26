@@ -54,11 +54,15 @@ export default function Post({ post }) {
 
   const likeHandler = async () => {
     try {
-      const uniqueId = currentUser._id + post._id;
-      await axios.put("/posts/" + post._id + "/like", {
-        userId: currentUser._id,
-        postUserId: post.user._id,
-      });
+      await axios.put(
+        `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/posts/` +
+          post._id +
+          "/like",
+        {
+          userId: currentUser._id,
+          postUserId: post.user._id,
+        }
+      );
     } catch (err) {}
     setLike(isLiked ? like - 1 : like + 1);
     setIsLiked(!isLiked);
@@ -80,10 +84,13 @@ export default function Post({ post }) {
     try {
       console.log(commentRef.current.value);
       console.log(currentUser._id);
-      const response = await axios.put(`/posts/${post._id}/postComment`, {
-        comment: commentRef.current.value,
-        user: currentUser._id,
-      });
+      const response = await axios.put(
+        `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/posts/${post._id}/postComment`,
+        {
+          comment: commentRef.current.value,
+          user: currentUser._id,
+        }
+      );
       console.log(response.data.commentObj);
       setCommentCounter(commentCounter + 1);
       commentRef.current.value = "";

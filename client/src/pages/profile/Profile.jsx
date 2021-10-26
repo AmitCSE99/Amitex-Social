@@ -69,11 +69,14 @@ export default function Profile() {
         console.log(requests);
         try {
           const accessToken = localStorage.getItem("accessToken");
-          const response = await axios.get(`/user/?username=${username}`, {
-            params: {
-              token: accessToken,
-            },
-          });
+          const response = await axios.get(
+            `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/?username=${username}`,
+            {
+              params: {
+                token: accessToken,
+              },
+            }
+          );
           if (!response.data.success) {
             console.log(response.data.success);
             logout();
@@ -109,14 +112,24 @@ export default function Profile() {
     try {
       setSendRequestLoading(true);
       if (alreadyRequested) {
-        await axios.put("/user/" + user._id + "/cancelRequest", {
-          userId: currentUser._id,
-        });
+        await axios.put(
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/` +
+            user._id +
+            "/cancelRequest",
+          {
+            userId: currentUser._id,
+          }
+        );
         setAlreadyRequested(!alreadyRequested);
       } else {
-        await axios.put("/user/" + user._id + "/request", {
-          userId: currentUser._id,
-        });
+        await axios.put(
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/` +
+            user._id +
+            "/request",
+          {
+            userId: currentUser._id,
+          }
+        );
         setAlreadyRequested(!alreadyRequested);
       }
       setSendRequestLoading(false);
@@ -128,9 +141,14 @@ export default function Profile() {
   const handleClickAccept = async () => {
     setSendAcceptRequestLoading(true);
     try {
-      await axios.put("/user/" + user._id + "/acceptRequest", {
-        userId: currentUser._id,
-      });
+      await axios.put(
+        `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/` +
+          user._id +
+          "/acceptRequest",
+        {
+          userId: currentUser._id,
+        }
+      );
       const newFollowersList = [...followers, user._id];
       const newRequestList = requests.filter(
         (uid) => uid.toString() !== user._id.toString()
@@ -150,9 +168,14 @@ export default function Profile() {
   const handleClickReject = async () => {
     setSendRejectRequestLoading(true);
     try {
-      await axios.put("/user/" + user._id + "/rejectRequest", {
-        userId: currentUser._id,
-      });
+      await axios.put(
+        `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/` +
+          user._id +
+          "/rejectRequest",
+        {
+          userId: currentUser._id,
+        }
+      );
       const newRequestList = requests.filter(
         (uid) => uid.toString() !== user._id.toString()
       );
@@ -168,9 +191,14 @@ export default function Profile() {
   const handleClickRemoveFollower = async () => {
     setRequestRemoveLoading(true);
     try {
-      await axios.put("/user/" + user._id + "/unfollow", {
-        userId: currentUser._id,
-      });
+      await axios.put(
+        `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/` +
+          user._id +
+          "/unfollow",
+        {
+          userId: currentUser._id,
+        }
+      );
       const newFollowers = followers.filter((uid) => uid !== user._id);
       console.log(newFollowers);
       Unfollow(newFollowers);
@@ -187,9 +215,14 @@ export default function Profile() {
   const handleClickStopFollowing = async () => {
     setStopFollowingRequestLoading(true);
     try {
-      await axios.put("/user/" + user._id + "/stopFollowing", {
-        userId: currentUser._id,
-      });
+      await axios.put(
+        `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/` +
+          user._id +
+          "/stopFollowing",
+        {
+          userId: currentUser._id,
+        }
+      );
       const newFollowings = followings.filter((uid) => uid !== user._id);
       StopFollowing(newFollowings);
       let newUserFollowers = userFollowers - 1;

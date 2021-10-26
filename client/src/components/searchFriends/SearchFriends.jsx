@@ -13,7 +13,9 @@ export default function SearchFriends(props) {
     const fetchUsers = async () => {
       try {
         setIsFetching(true);
-        const response = await axios.get(`/user/findUsers/${props.username}`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/findUsers/${props.username}`
+        );
         setUsersList(response.data.users);
         setIsFetching(false);
       } catch (err) {

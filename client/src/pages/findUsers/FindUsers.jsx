@@ -32,7 +32,9 @@ export default function FindUsers() {
     const fetchUsers = async () => {
       try {
         setIsFetching(true);
-        const response = await axios.get(`/user/findUsers/${name}`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_AMITEX_SOCIAL_BACKEND}/user/findUsers/${name}`
+        );
         setUsersList(response.data.users);
         setIsFetching(false);
       } catch (err) {
