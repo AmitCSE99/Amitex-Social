@@ -38,25 +38,19 @@ function App() {
   const login = useCallback((email, password) => {
     const loginUser = async () => {
       setFetchAuth(true);
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          email: email,
-          password: password,
-        }
-      );
+      const response = await axios.post("/auth/login", {
+        email: email,
+        password: password,
+      });
       if (!response.data.success) {
         setError(response.data.message);
         setFetchAuth(false);
       } else {
-        const newResponse = await axios.get(
-          "http://localhost:5000/api/auth/validateToken",
-          {
-            params: {
-              token: response.data.accessToken,
-            },
-          }
-        );
+        const newResponse = await axios.get("/auth/validateToken", {
+          params: {
+            token: response.data.accessToken,
+          },
+        });
         console.log(newResponse.data.user);
         setUser(newResponse.data.user);
         setFollowings(newResponse.data.user.following);
@@ -108,14 +102,11 @@ function App() {
     const getAndValidateUser = async () => {
       setIsFetching(true);
       const accessToken = localStorage.getItem("accessToken");
-      const response = await axios.get(
-        "http://localhost:5000/api/auth/validateToken",
-        {
-          params: {
-            token: accessToken,
-          },
-        }
-      );
+      const response = await axios.get("/auth/validateToken", {
+        params: {
+          token: accessToken,
+        },
+      });
 
       if (response.data.success) {
         console.log(response.data.user.followers);
