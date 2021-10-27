@@ -36,9 +36,11 @@ io.on("connection", (socket) => {
 
   socket.on("clearNotifications", (userId) => {
     const user = getUser(userId);
-    user.notifications = 0;
-    user.likedBy = [];
-    console.log(user);
+    if (user) {
+      user.notifications = 0;
+      user.likedBy = [];
+      console.log(user);
+    }
   });
 
   socket.on("sendNotification", ({ senderId, receiverId, type }) => {
