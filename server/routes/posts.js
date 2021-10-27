@@ -237,44 +237,47 @@ router.put("/:id/postComment", async (req, res) => {
     console.log("This is the owner", ownerUser);
     const otherComments = post.comments.length;
     await post.updateOne({ $push: { comments: commentObj } });
-    const index = ownerUser.notifications.findIndex(
-      (notification) =>
-        notification.post &&
-        notification.post.toString() === postId.toString() &&
-        notification.messageType === 3
-    );
-    let commentedUser = [];
-    commentedUser.push(req.body.user);
-    console.log("This is a comment Index", index);
-    const updatedNotification = {
-      messageType: 3,
-      user: req.body.user,
-      post: postId,
-      commentedUsersList: [req.body.user],
-      creationTime: Date.now(),
-      otherComments,
-      otherLikes: 0,
-      status: 0,
-    };
-    if (index === -1) {
-      await ownerUser.updateOne({
-        $push: { notifications: updatedNotification },
-      });
-    } else {
-      if (
-        !ownerUser.notifications[index].commentedUsersList.includes(
-          req.body.user
-        )
-      ) {
-        ownerUser.notifications[index].commentedUsersList.push(req.body.user);
+    if (post.user.toString() !== req.body.user) {
+      const index = ownerUser.notifications.findIndex(
+        (notification) =>
+          notification.post &&
+          notification.post.toString() === postId.toString() &&
+          notification.messageType === 3
+      );
+      let commentedUser = [];
+      commentedUser.push(req.body.user);
+      console.log("This is a comment Index", index);
+      const updatedNotification = {
+        messageType: 3,
+        user: req.body.user,
+        post: postId,
+        commentedUsersList: [req.body.user],
+        creationTime: Date.now(),
+        otherComments,
+        otherLikes: 0,
+        status: 0,
+      };
+      if (index === -1) {
+        await ownerUser.updateOne({
+          $push: { notifications: updatedNotification },
+        });
+      } else {
+        if (
+          !ownerUser.notifications[index].commentedUsersList.includes(
+            req.body.user
+          )
+        ) {
+          ownerUser.notifications[index].commentedUsersList.push(req.body.user);
+        }
+        ownerUser.notifications[index].status = 0;
+        ownerUser.notifications[index].creationTime = Date.now();
+        ownerUser.notifications[index].otherComments =
+          ownerUser.notifications[index].commentedUsersList.length - 1;
+        ownerUser.notifications[index].user = req.body.user;
+        await ownerUser.save();
       }
-      ownerUser.notifications[index].status = 0;
-      ownerUser.notifications[index].creationTime = Date.now();
-      ownerUser.notifications[index].otherComments =
-        ownerUser.notifications[index].commentedUsersList.length - 1;
-      ownerUser.notifications[index].user = req.body.user;
-      await ownerUser.save();
     }
+
     res.status(200).json({ commentObj });
   } catch (err) {
     console.log(err);
