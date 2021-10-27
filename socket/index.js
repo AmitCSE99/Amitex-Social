@@ -17,6 +17,7 @@ const addNewUser = (newUser, socketId) => {
       socketId,
       notifications: 0,
       likedBy: [],
+      commentedBy: [],
     });
 };
 const removeUser = (socketId) => {
@@ -28,8 +29,6 @@ const getUser = (userId) => {
 };
 
 io.on("connection", (socket) => {
-  // ...
-
   socket.on("newUser", (newUser) => {
     addNewUser(newUser, socket.id);
     console.log(onlineUsers);
@@ -45,9 +44,22 @@ io.on("connection", (socket) => {
   socket.on("sendNotification", ({ senderId, receiverId, type }) => {
     const receiver = getUser(receiverId);
     console.log(senderId);
-    if (receiver && !receiver.likedBy.includes(senderId)) {
+    if (receiver && type === 1 && !receiver.likedBy.includes(senderId)) {
       receiver.notifications += 1;
       receiver.likedBy.push(senderId);
+      const newNotifications = receiver.notifications;
+      io.to(receiver.socketId).emit("getNotification", {
+        senderId,
+        type,
+        newNotifications,
+      });
+    } else if (
+      receiver &&
+      type === 2 &&
+      !receiver.commentedBy.includes(senderId)
+    ) {
+      receiver.notifications += 1;
+      receiver.commentedBy.push(senderId);
       const newNotifications = receiver.notifications;
       io.to(receiver.socketId).emit("getNotification", {
         senderId,

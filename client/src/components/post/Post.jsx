@@ -108,6 +108,12 @@ export default function Post({ post }) {
           return new Date(p2.creationTime) - new Date(p1.creationTime);
         })
       );
+      currentUser._id !== post.user._id &&
+        socket.emit("sendNotification", {
+          senderId: currentUser._id + post._id,
+          receiverId: post.user._id,
+          type: 2,
+        });
       console.log(newCommentList);
     } catch (err) {
       console.log(err);
