@@ -188,6 +188,15 @@ router.put("/:id/cancelRequest", async (req, res) => {
       const user = await User.findById(req.params.id);
       if (user.requests.includes(req.body.userId)) {
         await user.updateOne({ $pull: { requests: req.body.userId } });
+        const index = user.notifications.findIndex(
+          (notification) =>
+            notification.messageType === 1 &&
+            notification.user.toString() === req.body.userId
+        );
+        if (index !== -1) {
+          user.notifications.splice(index, 1);
+          await user.save();
+        }
         res.status(200).json({
           success: true,
           message: "The Request has been cancelled succesfully",

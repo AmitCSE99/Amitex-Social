@@ -18,6 +18,7 @@ const addNewUser = (newUser, socketId) => {
       notifications: 0,
       likedBy: [],
       commentedBy: [],
+      requests: [],
     });
 };
 const removeUser = (socketId) => {
@@ -29,6 +30,7 @@ const getUser = (userId) => {
 };
 
 io.on("connection", (socket) => {
+  console.log("The Online Users are: ", onlineUsers);
   socket.on("newUser", (newUser) => {
     addNewUser(newUser, socket.id);
     console.log(onlineUsers);
@@ -39,6 +41,14 @@ io.on("connection", (socket) => {
     if (user) {
       user.notifications = 0;
       user.likedBy = [];
+      console.log(user);
+    }
+  });
+
+  socket.on("clearRequestNotifications", (userId) => {
+    const user = getUser(userId);
+    if (user) {
+      user.requests = [];
       console.log(user);
     }
   });
@@ -68,6 +78,43 @@ io.on("connection", (socket) => {
         type,
         newNotifications,
       });
+    } else if (
+      receiver &&
+      type === 3 &&
+      !receiver.requests.includes(senderId)
+    ) {
+      receiver.notifications += 1;
+      receiver.requests.push(senderId);
+      console.log("Updated Requests list ", receiver.requests);
+      const newNotifications = receiver.notifications;
+      console.log(receiver.requests);
+      io.to(receiver.socketId).emit("getNotification", {
+        senderId,
+        type,
+        newNotifications,
+      });
+      io.to(receiver.socketId).emit("getRequestNotification", {
+        requestList: receiver.requests,
+        type,
+        newRequestNotifications: receiver.requests.length,
+      });
+    } else if (receiver && type === 3 && receiver.requests.includes(senderId)) {
+      receiver.notifications -= 1;
+      receiver.requests = receiver.requests.filter(
+        (request) => request !== senderId
+      );
+      const newNotifications = receiver.notifications;
+
+      io.to(receiver.socketId).emit("getNotification", {
+        senderId,
+        type,
+        newNotifications,
+      });
+      io.to(receiver.socketId).emit("getRequestNotification", {
+        requestList: receiver.requests,
+        type,
+        newRequestNotifications: receiver.requests.length,
+      });
     }
   });
 
@@ -75,7 +122,7 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("Someone has Left!");
     removeUser(socket.id);
-    console.log(onlineUsers);
+    console.log("The Online Users are: ", onlineUsers);
   });
 });
 

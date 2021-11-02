@@ -11,6 +11,8 @@ export default function Topbar(props) {
     newNotifications,
     socketNotifications,
     setSocketNotifications,
+    RemoveRequest,
+    AddRequests,
     socket,
   } = useContext(AuthContext);
   // const [updatesNotifications, setUpdatesNotifications] = useState(0);
@@ -32,6 +34,18 @@ export default function Topbar(props) {
         });
     };
     updateNotifications();
+  }, [socket]);
+
+  useEffect(() => {
+    const updateRequestNotification = () => {
+      socket &&
+        socket.on("getRequestNotification", (data) => {
+          // const newRequestList = [...requests, data.senderId];
+          // RemoveRequest(newRequestList);
+          AddRequests(data.requestList);
+        });
+    };
+    updateRequestNotification();
   }, [socket]);
 
   const nameSearchHandler = (e) => {

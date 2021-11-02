@@ -17,5 +17,6 @@ const AuthContext = createContext({
   Unfollow: () => {},
   RemoveRequest: () => {},
   StopFollowing: () => {},
+  AddRequests: () => {},
 });
 export default AuthContext;

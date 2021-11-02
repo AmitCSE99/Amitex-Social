@@ -37,6 +37,7 @@ export default function Profile() {
     followings,
     followers,
     Follow,
+    socket,
     Unfollow,
     logout,
     RemoveRequest,
@@ -120,6 +121,12 @@ export default function Profile() {
             userId: currentUser._id,
           }
         );
+        socket &&
+          socket.emit("sendNotification", {
+            senderId: currentUser._id,
+            type: 3,
+            receiverId: user._id,
+          });
         setAlreadyRequested(!alreadyRequested);
       } else {
         await axios.put(
@@ -130,6 +137,12 @@ export default function Profile() {
             userId: currentUser._id,
           }
         );
+        socket &&
+          socket.emit("sendNotification", {
+            senderId: currentUser._id,
+            type: 3,
+            receiverId: user._id,
+          });
         setAlreadyRequested(!alreadyRequested);
       }
       setSendRequestLoading(false);

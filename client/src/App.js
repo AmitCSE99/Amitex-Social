@@ -86,6 +86,10 @@ function App() {
     setRequests(userId);
   }, []);
 
+  const AddRequest = useCallback((requestList) => {
+    setRequests(requestList);
+  });
+
   const Unfollow = useCallback((userId) => {
     setFollowers(userId);
   }, []);
@@ -174,6 +178,7 @@ function App() {
             Unfollow: Unfollow,
             RemoveRequest: RemoveRequest,
             StopFollowing: StopFollowing,
+            AddRequests: AddRequest,
           }}
         >
           <Router>
