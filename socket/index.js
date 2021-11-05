@@ -18,7 +18,7 @@ const addNewUser = (newUser, socketId) => {
       notifications: 0,
       likedBy: [],
       commentedBy: [],
-      requests: [],
+      requests: newUser.requests,
     });
 };
 const removeUser = (socketId) => {
@@ -115,6 +115,27 @@ io.on("connection", (socket) => {
         type,
         newRequestNotifications: receiver.requests.length,
       });
+    } else if (receiver && type === 4) {
+      const sender = getUser(senderId);
+      receiver.notifications += 1;
+      if (sender) {
+        sender.requests = sender.requests.filter(
+          (request) => request !== receiverId
+        );
+      }
+      const newNotifications = receiver.notifications;
+      sender &&
+        io.to(sender.socketId).emit("getRequestNotification", {
+          requestList: sender.requests,
+          type,
+          newRequestNotifications: sender.requests.length,
+        });
+      io.to(receiver.socketId).emit("getNotification", {
+        senderId,
+        type,
+        newNotifications,
+      });
+      console.log(sender.requests);
     }
   });
 

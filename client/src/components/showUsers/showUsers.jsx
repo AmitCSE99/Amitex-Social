@@ -7,7 +7,7 @@ import { CircularProgress } from "@material-ui/core";
 export default function ShowUsers(props) {
   const history = useHistory();
   const PF = process.env.REACT_APP_PUBLIC_FOLDER;
-  const { user, followers, requests, Follow, RemoveRequest } =
+  const { user, followers, requests, Follow, RemoveRequest, socket } =
     useContext(AuthContext);
   const [taskComplete, setTaskComplete] = useState(false);
   const [taskType, setTaskType] = useState(-1);
@@ -34,6 +34,13 @@ export default function ShowUsers(props) {
         (uid) => uid.toString() !== props.id.toString()
       );
       Follow(newFollowersList, newRequestList);
+      socket &&
+        socket.emit("sendNotification", {
+          senderId: user._id,
+          receiverId: props.id,
+          type: 4,
+        });
+
       setTaskType(0);
       setTaskComplete(true);
       setAcceptRequestLoading(false);
