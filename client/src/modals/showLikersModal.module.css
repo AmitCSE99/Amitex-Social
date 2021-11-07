@@ -1,0 +1,64 @@
+.showLikersModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+}
+.showLikersModal {
+  position: fixed;
+  width: 45vw;
+  height: 50vh;
+  border-radius: 10px;
+  overflow-x: hidden;
+  top: 25%;
+  left: 25%;
+  background-color: white;
+  z-index: 1000;
+}
+
+.showLikersOuterContainer::-webkit-scrollbar-thumb {
+  /* background-color: red; */
+  border: 4px solid transparent;
+  border-radius: 15px;
+  background-clip: padding-box;
+}
+.showLikersOuterContainer::-webkit-scrollbar {
+  width: 16px;
+}
+
+.showLikersOuterContainer {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+.showLikersContainer {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  margin: 12px;
+}
+.showLikersContainer img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 5px;
+  object-fit: cover;
+  cursor: pointer;
+}
+.loader {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.noLikers {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

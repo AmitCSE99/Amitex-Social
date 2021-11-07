@@ -8,9 +8,11 @@ import { Link } from "react-router-dom";
 import AuthContext from "../../context/AuthContext";
 import CommentsContainer from "../commentsContainer/CommentsContainer";
 import PostOptionsModal from "../../modals/PostOptionsModal";
+import ShowLikersModal from "../../modals/ShowLikersModal";
 
 export default function Post({ post }) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [likersModalIsOpen, setLikersModalIsOpen] = useState(false);
   const [like, setLike] = useState(post.likes.length);
   const [isLiked, setIsLiked] = useState(false);
   const [commentCounter, setCommentCounter] = useState(post.comments.length);
@@ -52,6 +54,10 @@ export default function Post({ post }) {
     setModalIsOpen(false);
   };
 
+  const closeLikersModalHandler = () => {
+    setLikersModalIsOpen(false);
+  };
+
   const likeHandler = async () => {
     try {
       await axios.put(
@@ -78,6 +84,10 @@ export default function Post({ post }) {
   const showCommentsHandler = () => {
     setViewComments(true);
     setNewComment(null);
+  };
+
+  const showLikersModal = () => {
+    setLikersModalIsOpen(true);
   };
 
   const commentSubmitHandler = async (e) => {
@@ -155,7 +165,9 @@ export default function Post({ post }) {
               onClick={likeHandler}
             />
             <img className="likeIcon" src={`${PF}heart.png`} alt="" />
-            <div className="postLikeCounter">{like} people like it</div>
+            <div className="postLikeCounter" onClick={showLikersModal}>
+              {like} people like it
+            </div>
           </div>
           <div className="postBottomRight">
             <span className="postCommentText">{commentCounter} comments</span>
@@ -222,6 +234,11 @@ export default function Post({ post }) {
         open={modalIsOpen}
         onClose={closeModalHandler}
         post={post}
+      />
+      <ShowLikersModal
+        open={likersModalIsOpen}
+        onClose={closeLikersModalHandler}
+        postId={post._id}
       />
     </div>
   );
