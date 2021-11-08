@@ -40,21 +40,70 @@ export default function ShowLikersModal({ open, onClose, postId }) {
           </div>
         )}
         {!isLoading && likers && (
-          <ul className={classes.showLikersOuterContainer}>
-            {likers.map((liker) => (
-              <li className={classes.showLikersContainer} key={liker._id}>
-                <img
-                  src={
-                    liker.profilePicture
-                      ? PF + post.user.profilePicture
-                      : PF + "person/noAvatar.png"
-                  }
-                  alt=""
-                />
-                <p>{liker.name}</p>
+          <div className={classes.likersWrapper}>
+            <div className={classes.likeDetails}>
+              <div className={classes.likeDetailsContainer}>
+                <div className={classes.likeImageContainer}>
+                  <img
+                    className={classes.likeImage}
+                    src={`${PF}like.png`}
+                    alt=""
+                  />
+                  <p>{likers.length}</p>
+                </div>
+                <button className={classes.closeButton} onClick={onClose}>
+                  Close
+                </button>
+              </div>
+            </div>
+            <ul className={classes.showLikersOuterContainer}>
+              {likers.map((liker) => (
+                <li className={classes.showLikersContainer} key={liker._id}>
+                  <img
+                    src={
+                      liker.profilePicture
+                        ? PF + post.user.profilePicture
+                        : PF + "person/noAvatar.png"
+                    }
+                    alt=""
+                  />
+                  <p>{liker.name}</p>
+                </li>
+              ))}
+              {/* <li className={classes.showLikersContainer}>
+                <img src={PF + "person/noAvatar.png"} alt="" />
+                <p>Amitendu</p>
               </li>
-            ))}
-          </ul>
+              <li className={classes.showLikersContainer}>
+                <img src={PF + "person/noAvatar.png"} alt="" />
+                <p>Amitendu</p>
+              </li>
+              <li className={classes.showLikersContainer}>
+                <img src={PF + "person/noAvatar.png"} alt="" />
+                <p>Amitendu</p>
+              </li>
+              <li className={classes.showLikersContainer}>
+                <img src={PF + "person/noAvatar.png"} alt="" />
+                <p>Amitendu</p>
+              </li>
+              <li className={classes.showLikersContainer}>
+                <img src={PF + "person/noAvatar.png"} alt="" />
+                <p>Amitendu</p>
+              </li>
+              <li className={classes.showLikersContainer}>
+                <img src={PF + "person/noAvatar.png"} alt="" />
+                <p>Amitendu</p>
+              </li>
+              <li className={classes.showLikersContainer}>
+                <img src={PF + "person/noAvatar.png"} alt="" />
+                <p>Amitendu</p>
+              </li>
+              <li className={classes.showLikersContainer}>
+                <img src={PF + "person/noAvatar.png"} alt="" />
+                <p>Amitendu</p>
+              </li> */}
+            </ul>
+          </div>
         )}
       </div>
     </>,

@@ -19,26 +19,39 @@
   z-index: 1000;
 }
 
-.showLikersOuterContainer::-webkit-scrollbar-thumb {
+.likersWrapper::-webkit-scrollbar-thumb {
   /* background-color: red; */
   border: 4px solid transparent;
   border-radius: 15px;
   background-clip: padding-box;
 }
-.showLikersOuterContainer::-webkit-scrollbar {
+.likersWrapper::-webkit-scrollbar {
   width: 16px;
+}
+.likersWrapper {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .showLikersOuterContainer {
   width: 100%;
   height: 100%;
-  overflow-y: auto;
+}
+.likeDetails {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 10px;
+  top: 0;
+  position: sticky;
 }
 .showLikersContainer {
   list-style: none;
   display: flex;
   align-items: center;
-  margin: 12px;
+  margin-bottom: 12px;
+  margin-left: 12px;
 }
 .showLikersContainer img {
   width: 50px;
@@ -47,6 +60,22 @@
   margin-right: 5px;
   object-fit: cover;
   cursor: pointer;
+}
+.likeImageContainer {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+.likeImage {
+  width: 28px;
+  height: 28px;
+  padding-right: 10px;
+}
+.likeDetailsContainer {
+  width: 100%;
+  margin-right: 10px;
+  display: flex;
+  justify-content: space-between;
 }
 .loader {
   width: 100%;
@@ -61,4 +90,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.closeButton {
+  cursor: pointer;
+  border: none;
+  transition: 0.5s;
+  border-radius: 5px;
+  width: 15%;
+  background-size: 200% auto;
+  padding: 8px 5px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 0 20px #eee;
+
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+
+  background-image: linear-gradient(to right, #662d8c, #ed1e79);
+}
+.closeButton:hover {
+  background-position: right center;
 }
